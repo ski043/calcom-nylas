@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button";
+import { times } from "@/app/lib/times";
 import {
   Card,
   CardContent,
@@ -6,6 +6,15 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import React from "react";
 
@@ -25,6 +34,35 @@ const AvailablityPage = () => {
           <div className="flex items-center gap-4">
             <Switch name="switch" />
             <p>Monday</p>
+
+            <Select>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="From Time" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  {times.map((time) => (
+                    <SelectItem key={time.id} value={time.time}>
+                      {time.time}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+            <Select>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Too Time" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  {times.map((time) => (
+                    <SelectItem key={time.id} value={time.time}>
+                      {time.time}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
           </div>
           <div className="flex items-center gap-4">
             <Switch name="switch" />
