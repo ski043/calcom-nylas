@@ -1,4 +1,7 @@
 import { nylas, nylasConfig } from "@/app/lib/nylas";
+import { SessionData, sessionOptions } from "@/app/lib/session";
+import { getIronSession } from "iron-session";
+import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { NextRequest } from "next/server";
 
@@ -19,20 +22,24 @@ export async function GET(req: NextRequest) {
     code,
   };
 
-  const response = await nylas.auth.exchangeCodeForToken(codeExchangePayload);
-  const { grantId, email } = response;
+  try {
+    const response = await nylas.auth.exchangeCodeForToken(codeExchangePayload);
+    const { grantId, email } = response;
 
-  /*  await mongoose.connect(process.env.MONGODB_URI as string);
+    const session = await getIronSession<SessionData>(
+      cookies(),
+      sessionOptions
+    );
 
-  const profileDoc = await ProfileModel.findOne({ email });
-  if (profileDoc) {
-    profileDoc.grantId = grantId;
-    await profileDoc.save();
-  } else {
-    await ProfileModel.create({ email, grantId });
+    session.user.email = email;
+    session.user.grantId = grantId;
+
+    await session.save();
+
+    console.log({ grantId });
+  } catch (error) {
+    console.error("Error exchanging code for token:", error);
   }
-
-  await session().set("email", email); */
 
   redirect("/");
 }
