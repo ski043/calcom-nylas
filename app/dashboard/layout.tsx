@@ -30,6 +30,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { ReactNode } from "react";
+import { requireUser } from "../lib/hooks";
+import prisma from "../lib/db";
 
 export const dashboardLinks = [
   {
@@ -49,7 +51,9 @@ export const dashboardLinks = [
   },
 ];
 
-export default function Dashboard({ children }: { children: ReactNode }) {
+export default async function Dashboard({ children }: { children: ReactNode }) {
+  const session = await requireUser();
+
   return (
     <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
       <div className="hidden border-r bg-muted/40 md:block">
@@ -176,7 +180,9 @@ export default function Dashboard({ children }: { children: ReactNode }) {
                 <DropdownMenuItem>Settings</DropdownMenuItem>
                 <DropdownMenuItem>Support</DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>Logout</DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/api/auth/logout">Logout</Link>
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>

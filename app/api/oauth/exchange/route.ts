@@ -52,5 +52,5 @@ export async function GET(req: NextRequest) {
     console.error("Error exchanging code for token:", error);
   }
 
-  redirect("/");
+  redirect("/dashboard");
 }

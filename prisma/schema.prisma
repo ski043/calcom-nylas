@@ -14,9 +14,25 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  grantId   String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id       String  @id @default(cuid())
+  email    String  @unique
+  grantId  String
+  username String? @unique
+
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  availability Availability[]
+}
+
+model Availability {
+  id Int @id @default(autoincrement())
+
+  day      String // e.g., 'Monday', 'Tuesday'
+  fromTime String // e.g., '08:00'
+  tillTime String // e.g., '18:00'
+  isActive Boolean @default(false) // Toggle availability for the day
+
+  // Relations
+  User   User   @relation(fields: [userId], references: [id])
+  userId String
 }
