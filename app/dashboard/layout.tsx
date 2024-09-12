@@ -32,6 +32,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { ReactNode } from "react";
 import { requireUser } from "../lib/hooks";
 import prisma from "../lib/db";
+import { redirect } from "next/navigation";
 
 export const dashboardLinks = [
   {
@@ -51,8 +52,25 @@ export const dashboardLinks = [
   },
 ];
 
+async function getData(email: string) {
+  const data = await prisma.user.findUnique({
+    where: {
+      email: email,
+    },
+    select: {
+      username: true,
+    },
+  });
+
+  if (!data?.username) {
+    return redirect("/onboarding");
+  }
+}
+
 export default async function Dashboard({ children }: { children: ReactNode }) {
   const session = await requireUser();
+
+  const data = await getData(session.email as string);
 
   return (
     <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
