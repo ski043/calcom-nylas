@@ -1,6 +1,8 @@
+import prisma from "@/app/lib/db";
 import { nylas, nylasConfig } from "@/app/lib/nylas";
 import { SessionData, sessionOptions } from "@/app/lib/session";
 import { getIronSession } from "iron-session";
+
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { NextRequest } from "next/server";
@@ -31,10 +33,19 @@ export async function GET(req: NextRequest) {
       sessionOptions
     );
 
-    session.user.email = email;
-    session.user.grantId = grantId;
+    session.email = email;
+    session.grantId = grantId;
 
     await session.save();
+
+    await prisma.user.upsert({
+      where: { email: session.email }, // Checks if a user with this email exists
+      update: { grantId: session.grantId }, // Updates if user exists
+      create: {
+        email: session.email,
+        grantId: session.grantId,
+      }, // Creates a new user if it doesn't exist
+    });
 
     console.log({ grantId });
   } catch (error) {
