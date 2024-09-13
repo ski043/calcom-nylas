@@ -47,3 +47,8 @@ export const onboardingSchemaLocale = z.object({
   fullName: z.string().min(3).max(150),
   description: z.string().min(3).max(1500),
 });
+
+export const aboutSettingsSchema = z.object({
+  fullName: z.string().min(3).max(150),
+  description: z.string().min(3).max(1500),
+});

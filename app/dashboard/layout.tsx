@@ -1,6 +1,5 @@
 import Link from "next/link";
 import {
-  Bell,
   CircleUser,
   Home,
   LineChart,
@@ -195,9 +194,9 @@ export default async function Dashboard({ children }: { children: ReactNode }) {
               <DropdownMenuContent align="end">
                 <DropdownMenuLabel>My Account</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>Settings</DropdownMenuItem>
-                <DropdownMenuItem>Support</DropdownMenuItem>
-                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <Link href="/dashboard/settings">Settings</Link>
+                </DropdownMenuItem>
                 <DropdownMenuItem asChild>
                   <Link href="/api/auth/logout">Logout</Link>
                 </DropdownMenuItem>
