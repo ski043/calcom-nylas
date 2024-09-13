@@ -1,13 +1,16 @@
 import Link from "next/link";
 import {
+  CalendarCheck,
   CircleUser,
   Home,
+  HomeIcon,
   LineChart,
   Menu,
   Package,
   Package2,
   ShoppingCart,
   Users,
+  Users2,
 } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
@@ -32,24 +35,9 @@ import { ReactNode } from "react";
 import { requireUser } from "../lib/hooks";
 import prisma from "../lib/db";
 import { redirect } from "next/navigation";
-
-export const dashboardLinks = [
-  {
-    id: 0,
-    name: "Event Types",
-    href: "/dashboard",
-  },
-  {
-    id: 1,
-    name: "Meetings",
-    href: "/dashboard/meetings",
-  },
-  {
-    id: 2,
-    name: "Availablity",
-    href: "/dashboard/availability",
-  },
-];
+import Logo from "@/public/logo.png";
+import Image from "next/image";
+import { DasboardLinks } from "../components/dashboard/DasboardLinks";
 
 async function getData(email: string) {
   const data = await prisma.user.findUnique({
@@ -77,7 +65,7 @@ export default async function Dashboard({ children }: { children: ReactNode }) {
         <div className="flex h-full max-h-screen flex-col gap-2">
           <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
             <Link href="/" className="flex items-center gap-2 font-semibold">
-              <Package2 className="h-6 w-6" />
+              <Image src={Logo} alt="Logo" className="size-6" />
               <p className="text-xl font-bold">
                 Cal<span className="text-primary">Marshal</span>
               </p>
@@ -85,16 +73,7 @@ export default async function Dashboard({ children }: { children: ReactNode }) {
           </div>
           <div className="flex-1">
             <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
-              {dashboardLinks.map((link) => (
-                <Link
-                  key={link.id}
-                  href={link.href}
-                  className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
-                >
-                  <Home className="h-4 w-4" />
-                  {link.name}
-                </Link>
-              ))}
+              <DasboardLinks />
             </nav>
           </div>
         </div>
