@@ -1,7 +1,8 @@
 import { SubmitButton } from "@/app/components/SubmitButton";
 import prisma from "@/app/lib/db";
-import { requireUser } from "@/app/lib/hooks";
+
 import { times } from "@/app/lib/times";
+
 import {
   Card,
   CardContent,
@@ -21,11 +22,15 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { notFound } from "next/navigation";
 import React from "react";
+import { requireUser } from "@/app/lib/hooks";
 
 async function getData(userEmail: string) {
   const data = await prisma.availability.findMany({
     where: {
       userEmail: userEmail,
+    },
+    orderBy: {
+      id: "asc",
     },
   });
 
@@ -40,25 +45,32 @@ const AvailablityPage = async () => {
   const session = await requireUser();
   const data = await getData(session.email as string);
 
-  console.log(data);
-
   return (
-    <>
-      <Card>
-        <CardHeader>
-          <CardTitle>Availability</CardTitle>
-          <CardDescription>
-            In this section you can manage your availability.
-          </CardDescription>
-        </CardHeader>
+    <Card>
+      <CardHeader>
+        <CardTitle>Availability</CardTitle>
+        <CardDescription>
+          In this section you can manage your availability.
+        </CardDescription>
+      </CardHeader>
+      <form>
         <CardContent className="flex flex-col gap-y-4">
           {data.map((item) => (
-            <div className="grid grid-cols-6 items-center gap-4 " key={item.id}>
+            <div className="grid grid-cols-6 items-center gap-4" key={item.id}>
+              <input type="hidden" name={`id-${item.id}`} value={item.id} />
               <div className="flex items-center gap-x-3">
-                <Switch name="switch" checked={item.isActive} />
+                <Switch
+                  name={`isActive-${item.id}`}
+                  defaultChecked={item.isActive}
+                />
+                <input
+                  type="hidden"
+                  name={`isActiveHidden-${item.id}`}
+                  value={item.isActive ? "true" : "false"}
+                />
                 <p>{item.day}</p>
               </div>
-              <Select defaultValue={item.fromTime}>
+              <Select name={`fromTime-${item.id}`} defaultValue={item.fromTime}>
                 <SelectTrigger className="w-[180px]">
                   <SelectValue placeholder="From Time" />
                 </SelectTrigger>
@@ -72,9 +84,9 @@ const AvailablityPage = async () => {
                   </SelectGroup>
                 </SelectContent>
               </Select>
-              <Select defaultValue={item.tillTime}>
+              <Select name={`tillTime-${item.id}`} defaultValue={item.tillTime}>
                 <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder="Too Time" />
+                  <SelectValue placeholder="To Time" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>
@@ -92,8 +104,8 @@ const AvailablityPage = async () => {
         <CardFooter>
           <SubmitButton text="Save Changes" />
         </CardFooter>
-      </Card>
-    </>
+      </form>
+    </Card>
   );
 };
 

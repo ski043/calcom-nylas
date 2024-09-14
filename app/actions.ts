@@ -9,6 +9,14 @@ import {
   onboardingSchema,
 } from "./lib/zodSchemas";
 import { redirect } from "next/navigation";
+import { z } from "zod";
+
+const availabilityUpdateSchema = z.object({
+  id: z.number(),
+  isActive: z.boolean(),
+  fromTime: z.string(),
+  tillTime: z.string(),
+});
 
 export async function onboardingAction(prevState: any, formData: FormData) {
   const session = await requireUser();
@@ -137,3 +145,55 @@ export async function CreateEventTypeAction(
 
   return redirect("/dashboard");
 }
+
+/* export async function updateAvailabilityAction(formData: FormData) {
+  const session = await requireUser();
+
+  const updates = [];
+  for (const [key, value] of formData.entries()) {
+    if (key.startsWith("$ACTION")) continue; // Skip Next.js internal fields
+
+    const [field, id] = key.split("-");
+    const index = parseInt(id) - 1; // Adjust for 0-based array indexing
+    if (!updates[index]) updates[index] = { id: parseInt(id) };
+
+    if (field === "isActive") {
+      updates[index][field] = value === "on";
+    } else if (field === "isActiveHidden") {
+      // Only set isActive if it wasn't already set by the switch
+      if (updates[index].isActive === undefined) {
+        updates[index].isActive = value === "true";
+      }
+    } else {
+      updates[index][field] = value;
+    }
+  }
+
+  // Filter out any undefined or empty entries
+  const validUpdates = updates.filter((update) => update && update.id);
+
+  console.log(validUpdates);
+
+  try {
+    await Promise.all(
+      validUpdates.map((update) =>
+        prisma.availability.update({
+          where: {
+            id: Number(update.id),
+            userEmail: session.email as string,
+          },
+          data: {
+            isActive: update.isActive,
+            fromTime: update.fromTime,
+            tillTime: update.tillTime,
+          },
+        })
+      )
+    );
+
+    return { status: "success", message: "Availability updated successfully" };
+  } catch (error) {
+    console.error("Error updating availability:", error);
+    return { status: "error", message: "Failed to update availability" };
+  }
+} */
