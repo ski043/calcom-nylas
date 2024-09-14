@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { SettingsAction } from "@/app/actions";
 import { aboutSettingsSchema } from "@/app/lib/zodSchemas";
 import {
@@ -17,15 +18,28 @@ import { useForm } from "@conform-to/react";
 import { parseWithZod } from "@conform-to/zod";
 import { useFormState } from "react-dom";
 import { SubmitButton } from "../SubmitButton";
+import { UploadDropzone } from "@/app/lib/uploadthing";
+import Image from "next/image";
+import { X } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 interface iAppProps {
   fullName: string;
   email: string;
   description: string;
+  profileImage: string;
 }
 
-export function SettingsForm({ description, fullName, email }: iAppProps) {
+export function SettingsForm({
+  description,
+  fullName,
+  email,
+  profileImage,
+}: iAppProps) {
   const [lastResult, action] = useFormState(SettingsAction, undefined);
+  const [currentProfileImage, setCurrentProfileImage] = useState(profileImage);
+
   const [form, fields] = useForm({
     // Sync the result of last submission
     lastResult,
@@ -39,6 +53,10 @@ export function SettingsForm({ description, fullName, email }: iAppProps) {
     shouldValidate: "onBlur",
     shouldRevalidate: "onInput",
   });
+
+  const handleDeleteImage = () => {
+    setCurrentProfileImage("");
+  };
 
   return (
     <Card>
@@ -56,6 +74,7 @@ export function SettingsForm({ description, fullName, email }: iAppProps) {
               placeholder="Jan Marshall"
               defaultValue={fullName}
             />
+            <p className="text-red-500 text-sm">{fields.fullName.errors}</p>
           </div>
           <div className="flex flex-col gap-y-2">
             <Label>Email</Label>
@@ -68,6 +87,48 @@ export function SettingsForm({ description, fullName, email }: iAppProps) {
               key={fields.description.key}
               defaultValue={description}
             />
+            <p className="text-red-500 text-sm">{fields.description.errors}</p>
+          </div>
+          <div className="grid gap-y-5">
+            <input
+              type="hidden"
+              name={fields.profileImage.name}
+              key={fields.profileImage.key}
+              value={currentProfileImage}
+            />
+            <Label>Profile Image</Label>
+            {currentProfileImage ? (
+              <div className="relative size-16">
+                <Image
+                  src={currentProfileImage}
+                  alt="Profile"
+                  width={300}
+                  height={300}
+                  className="rounded-lg size-16"
+                />
+                <Button
+                  type="button"
+                  onClick={handleDeleteImage}
+                  variant="destructive"
+                  size="icon"
+                  className="absolute -top-3 -right-3"
+                >
+                  <X className="size-4" />
+                </Button>
+              </div>
+            ) : (
+              <UploadDropzone
+                endpoint="imageUploader"
+                onClientUploadComplete={(res) => {
+                  setCurrentProfileImage(res[0].url);
+                  toast.success("Profile image uploaded");
+                }}
+                onUploadError={(error) => {
+                  toast.error(error.message);
+                }}
+              />
+            )}
+            <p className="text-red-500 text-sm">{fields.profileImage.errors}</p>
           </div>
         </CardContent>
         <CardFooter>

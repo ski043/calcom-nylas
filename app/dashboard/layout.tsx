@@ -1,16 +1,12 @@
 import Link from "next/link";
 import {
-  CalendarCheck,
-  CircleUser,
   Home,
-  HomeIcon,
   LineChart,
   Menu,
   Package,
   Package2,
   ShoppingCart,
   Users,
-  Users2,
 } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
@@ -39,6 +35,7 @@ import Logo from "@/public/logo.png";
 import Image from "next/image";
 import { DasboardLinks } from "../components/dashboard/DasboardLinks";
 import { ThemeToggle } from "../components/dashboard/ThemeToggle";
+import { Toaster } from "@/components/ui/sonner";
 
 async function getData(email: string) {
   const data = await prisma.user.findUnique({
@@ -195,6 +192,7 @@ export default async function Dashboard({ children }: { children: ReactNode }) {
           {children}
         </main>
       </div>
+      <Toaster richColors closeButton />
     </div>
   );
 }

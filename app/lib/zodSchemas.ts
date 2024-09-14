@@ -51,6 +51,7 @@ export const onboardingSchemaLocale = z.object({
 export const aboutSettingsSchema = z.object({
   fullName: z.string().min(3).max(150),
   description: z.string().min(3).max(1500),
+  profileImage: z.string(),
 });
 
 export const eventTypeSchema = z.object({

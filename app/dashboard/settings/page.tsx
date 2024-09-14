@@ -25,6 +25,7 @@ async function getData(email: string) {
       fullName: true,
       email: true,
       description: true,
+      profileImage: true,
     },
   });
 
@@ -43,6 +44,7 @@ const SettingsPage = async () => {
       description={data.description as string}
       email={data.email}
       fullName={data.fullName as string}
+      profileImage={data.profileImage as string}
     />
   );
 };

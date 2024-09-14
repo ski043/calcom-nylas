@@ -21,6 +21,7 @@
     "@radix-ui/react-slot": "^1.1.0",
     "@radix-ui/react-switch": "^1.1.0",
     "@radix-ui/react-tooltip": "^1.1.2",
+    "@uploadthing/react": "^7.0.1",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "iron-session": "^8.0.3",
@@ -30,8 +31,10 @@
     "nylas": "^7.5.2",
     "react": "^18",
     "react-dom": "^18",
+    "sonner": "^1.5.0",
     "tailwind-merge": "^2.5.2",
     "tailwindcss-animate": "^1.0.7",
+    "uploadthing": "^7.0.1",
     "zod": "^3.23.8"
   },
   "devDependencies": {
