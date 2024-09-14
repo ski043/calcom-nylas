@@ -92,22 +92,24 @@ const DashbaordPage = async () => {
                         <span>Copy</span>
                       </DropdownMenuItem>
                       <DropdownMenuItem asChild>
-                        <Link href={`/dashboard/edit/${item.id}`}>
+                        <Link href={`/dashboard/event/${item.id}`}>
                           <Pen className="mr-2 h-4 w-4" />
                           <span>Edit</span>
                         </Link>
                       </DropdownMenuItem>
                     </DropdownMenuGroup>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem>
-                      <Trash className="mr-2 h-4 w-4" />
-                      <span>Delete</span>
+                    <DropdownMenuItem asChild>
+                      <Link href={`/dashboard/event/${item.id}/delete`}>
+                        <Trash className="mr-2 h-4 w-4" />
+                        <span>Delete</span>
+                      </Link>
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
               </div>
 
-              <Link href={`/dashboard/edit/${item.id}`}>
+              <Link href={`/dashboard/event/${item.id}`}>
                 <div className="p-5">
                   <div className="flex items-center">
                     <div className="flex-shrink-0">
@@ -131,7 +133,7 @@ const DashbaordPage = async () => {
               <div className="bg-secondary px-5 py-3 flex justify-between items-center">
                 <Switch id="airplane-mode" checked={item.active} />
 
-                <Link href={`/dashboard/edit/${item.id}`}>
+                <Link href={`/dashboard/event/${item.id}`}>
                   <Button className="">Edit Event</Button>
                 </Link>
               </div>

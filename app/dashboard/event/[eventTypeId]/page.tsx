@@ -37,6 +37,7 @@ const EditEventTypePage = async ({
       title={data.title}
       url={data.url}
       key={data.id}
+      id={data.id}
     />
   );
 };

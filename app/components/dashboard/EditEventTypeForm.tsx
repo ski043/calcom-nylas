@@ -21,6 +21,7 @@ import { eventTypeSchema } from "@/app/lib/zodSchemas";
 import { EditEventTypeAction } from "@/app/actions";
 
 interface iAppProps {
+  id: string;
   title: string;
   url: string;
   description: string;
@@ -32,6 +33,7 @@ export function EditEventTypeForm({
   duration,
   title,
   url,
+  id,
 }: iAppProps) {
   const [lastResult, action] = useFormState(EditEventTypeAction, undefined);
   const [form, fields] = useForm({
@@ -57,6 +59,7 @@ export function EditEventTypeForm({
           </CardDescription>
         </CardHeader>
         <form noValidate id={form.id} onSubmit={form.onSubmit} action={action}>
+          <input type="hidden" name="id" value={id} />
           <CardContent className="grid gap-y-5">
             <div className="flex flex-col gap-y-2">
               <Label>Title</Label>
