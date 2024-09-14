@@ -48,7 +48,7 @@ const OnboardingPage = () => {
         <form id={form.id} onSubmit={form.onSubmit} action={action} noValidate>
           <CardContent className="flex flex-col gap-y-5">
             <div className="grid gap-y-2">
-              <Label>Username</Label>
+              <Label>Full Name</Label>
               <Input
                 name={fields.fullName.name}
                 defaultValue={fields.fullName.initialValue}
@@ -58,7 +58,7 @@ const OnboardingPage = () => {
               <p className="text-red-500 text-sm">{fields.fullName.errors}</p>
             </div>
             <div className="grid gap-y-2">
-              <Label>Full Name</Label>
+              <Label>Username</Label>
 
               <div className="flex rounded-md">
                 <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm">
@@ -69,7 +69,7 @@ const OnboardingPage = () => {
                   key={fields.username.key}
                   defaultValue={fields.username.initialValue}
                   name={fields.username.name}
-                  placeholder="www.example.com"
+                  placeholder="example-user-1"
                   className="rounded-l-none"
                 />
               </div>

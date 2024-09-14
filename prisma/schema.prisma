@@ -31,14 +31,23 @@ model User {
 model Availability {
   id Int @id @default(autoincrement())
 
-  day      String // e.g., 'Monday', 'Tuesday'
+  day      Day
   fromTime String // e.g., '08:00'
   tillTime String // e.g., '18:00'
-  isActive Boolean @default(false) // Toggle availability for the day
+  isActive Boolean @default(true) // Toggle availability for the day
 
-  // Relations
-  User   User   @relation(fields: [userId], references: [id])
-  userId String
+  User      User   @relation(fields: [userEmail], references: [email])
+  userEmail String
+}
+
+enum Day {
+  Monday
+  Tuesday
+  Wednesday
+  Thursday
+  Friday
+  Saturday
+  Sunday
 }
 
 model EventType {
