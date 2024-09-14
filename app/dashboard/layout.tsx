@@ -38,6 +38,7 @@ import { redirect } from "next/navigation";
 import Logo from "@/public/logo.png";
 import Image from "next/image";
 import { DasboardLinks } from "../components/dashboard/DasboardLinks";
+import { ThemeToggle } from "../components/dashboard/ThemeToggle";
 
 async function getData(email: string) {
   const data = await prisma.user.findUnique({
@@ -158,7 +159,8 @@ export default async function Dashboard({ children }: { children: ReactNode }) {
             </SheetContent>
           </Sheet>
 
-          <div className="ml-auto">
+          <div className="ml-auto flex items-center gap-2">
+            <ThemeToggle />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
