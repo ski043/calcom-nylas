@@ -119,6 +119,9 @@ export function SettingsForm({
             ) : (
               <UploadDropzone
                 endpoint="imageUploader"
+                appearance={{
+                  container: "border-muted",
+                }}
                 onClientUploadComplete={(res) => {
                   setCurrentProfileImage(res[0].url);
                   toast.success("Profile image uploaded");
