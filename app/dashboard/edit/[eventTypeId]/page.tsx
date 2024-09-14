@@ -1,3 +1,4 @@
+import { EditEventTypeForm } from "@/app/components/dashboard/EditEventTypeForm";
 import prisma from "@/app/lib/db";
 import { notFound } from "next/navigation";
 import React from "react";
@@ -12,6 +13,7 @@ async function getData(eventTypeId: string) {
       description: true,
       duration: true,
       url: true,
+      id: true,
     },
   });
 
@@ -27,7 +29,16 @@ const EditEventTypePage = async ({
   params: { eventTypeId: string };
 }) => {
   const data = await getData(params.eventTypeId);
-  return <h1>yo</h1>;
+
+  return (
+    <EditEventTypeForm
+      description={data.description}
+      duration={data.duration}
+      title={data.title}
+      url={data.url}
+      key={data.id}
+    />
+  );
 };
 
 export default EditEventTypePage;

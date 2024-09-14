@@ -20,7 +20,19 @@ import { parseWithZod } from "@conform-to/zod";
 import { eventTypeSchema } from "@/app/lib/zodSchemas";
 import { EditEventTypeAction } from "@/app/actions";
 
-export function EditEventTypeForm() {
+interface iAppProps {
+  title: string;
+  url: string;
+  description: string;
+  duration: number;
+}
+
+export function EditEventTypeForm({
+  description,
+  duration,
+  title,
+  url,
+}: iAppProps) {
   const [lastResult, action] = useFormState(EditEventTypeAction, undefined);
   const [form, fields] = useForm({
     // Sync the result of last submission
@@ -51,7 +63,7 @@ export function EditEventTypeForm() {
               <Input
                 name={fields.title.name}
                 key={fields.title.key}
-                defaultValue={fields.title.initialValue}
+                defaultValue={title}
                 placeholder="30 min meeting"
               />
               <p className="text-red-500 text-sm">{fields.title.errors}</p>
@@ -66,7 +78,7 @@ export function EditEventTypeForm() {
                 <Input
                   type="text"
                   key={fields.url.key}
-                  defaultValue={fields.url.initialValue}
+                  defaultValue={url}
                   name={fields.url.name}
                   placeholder="example-user-1"
                   className="rounded-l-none"
@@ -81,7 +93,7 @@ export function EditEventTypeForm() {
               <Textarea
                 name={fields.description.name}
                 key={fields.description.key}
-                defaultValue={fields.description.initialValue}
+                defaultValue={description}
                 placeholder="30 min meeting"
               />
               <p className="text-red-500 text-sm">
@@ -94,7 +106,7 @@ export function EditEventTypeForm() {
               <Input
                 name={fields.duration.name}
                 key={fields.duration.key}
-                defaultValue={fields.duration.initialValue}
+                defaultValue={duration}
                 placeholder="30 min"
                 type="number"
               />
