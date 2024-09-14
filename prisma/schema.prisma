@@ -15,12 +15,13 @@ datasource db {
 }
 
 model User {
-  id          String  @id @default(cuid())
-  email       String  @unique
-  grantId     String
-  username    String? @unique
-  fullName    String?
-  description String?
+  id           String  @id @default(cuid())
+  email        String  @unique
+  grantId      String
+  username     String? @unique
+  fullName     String?
+  description  String?
+  profileImage String
 
   createdAt    DateTime       @default(now())
   updatedAt    DateTime       @updatedAt

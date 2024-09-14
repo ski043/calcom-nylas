@@ -168,7 +168,13 @@ export default async function Dashboard({ children }: { children: ReactNode }) {
                   size="icon"
                   className="rounded-full"
                 >
-                  <CircleUser className="h-5 w-5" />
+                  <Image
+                    src={session.profileImage as string}
+                    alt="Profile"
+                    width={20}
+                    height={20}
+                    className="w-full h-full rounded-full"
+                  />
                   <span className="sr-only">Toggle user menu</span>
                 </Button>
               </DropdownMenuTrigger>

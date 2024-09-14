@@ -12,4 +12,5 @@ export const sessionOptions: SessionOptions = {
 export interface SessionData {
   email?: string;
   grantId?: string;
+  profileImage?: string;
 }

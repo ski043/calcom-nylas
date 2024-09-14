@@ -28,6 +28,16 @@ export async function GET(req: NextRequest) {
     const response = await nylas.auth.exchangeCodeForToken(codeExchangePayload);
     const { grantId, email } = response;
 
+    await prisma.user.upsert({
+      where: { email }, // Checks if a user with this email exists
+      update: { grantId }, // Updates if user exists
+      create: {
+        email: email,
+        grantId: grantId,
+        profileImage: `https://avatar.vercel.sh/${email}`,
+      }, // Creates a new user if it doesn't exist
+    });
+
     const session = await getIronSession<SessionData>(
       cookies(),
       sessionOptions
@@ -35,17 +45,9 @@ export async function GET(req: NextRequest) {
 
     session.email = email;
     session.grantId = grantId;
+    session.profileImage = `https://avatar.vercel.sh/${email}`;
 
     await session.save();
-
-    await prisma.user.upsert({
-      where: { email: session.email }, // Checks if a user with this email exists
-      update: { grantId: session.grantId }, // Updates if user exists
-      create: {
-        email: session.email,
-        grantId: session.grantId,
-      }, // Creates a new user if it doesn't exist
-    });
 
     console.log({ grantId });
   } catch (error) {
