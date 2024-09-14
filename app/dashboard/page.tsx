@@ -97,9 +97,35 @@ import { notFound } from "next/navigation";
 import React from "react";
 import prisma from "../lib/db";
 import { requireUser } from "../lib/hooks";
-import { Users2 } from "lucide-react";
+import {
+  ExternalLink,
+  Link2,
+  Pen,
+  Settings,
+  Trash,
+  User,
+  Users2,
+} from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { EmptyState } from "../components/dashboard/EmptyState";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 async function getData(email: string) {
   const data = await prisma.user.findUnique({
@@ -145,9 +171,42 @@ const DashbaordPage = async () => {
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {data.EventType.map((item) => (
             <div
-              className="  overflow-hidden shadow rounded-lg border"
+              className="  overflow-hidden shadow rounded-lg border relative"
               key={item.id}
             >
+              <div className="absolute top-2 right-2">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" size="icon">
+                      <Settings className="size-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="w-20" align="end">
+                    <DropdownMenuLabel>Event</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuGroup>
+                      <DropdownMenuItem>
+                        <ExternalLink className="mr-2 h-4 w-4" />
+                        <span>Preview</span>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem>
+                        <Link2 className="mr-2 h-4 w-4" />
+                        <span>Copy</span>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem>
+                        <Pen className="mr-2 h-4 w-4" />
+                        <span>Edit</span>
+                      </DropdownMenuItem>
+                    </DropdownMenuGroup>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem>
+                      <Trash className="mr-2 h-4 w-4" />
+                      <span>Delete</span>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
+
               <Link href={`menu/sdf`}>
                 <div className="p-5">
                   <div className="flex items-center">

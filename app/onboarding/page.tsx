@@ -14,7 +14,7 @@ import React from "react";
 import { SubmitButton } from "../components/SubmitButton";
 import { useFormState } from "react-dom";
 import { parseWithZod } from "@conform-to/zod";
-import { onboardingSchema, onboardingSchemaLocale } from "../lib/zodSchemas";
+import { onboardingSchemaLocale } from "../lib/zodSchemas";
 import { useForm } from "@conform-to/react";
 import { onboardingAction } from "../actions";
 import { Textarea } from "@/components/ui/textarea";

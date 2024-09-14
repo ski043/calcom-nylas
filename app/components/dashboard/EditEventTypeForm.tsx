@@ -1,8 +1,5 @@
 "use client";
 
-import { CreateEventTypeAction } from "@/app/actions";
-import { SubmitButton } from "@/app/components/SubmitButton";
-import { eventTypeSchema } from "@/app/lib/zodSchemas";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -15,14 +12,16 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import Link from "next/link";
+import { SubmitButton } from "../SubmitButton";
+import { useFormState } from "react-dom";
 import { useForm } from "@conform-to/react";
 import { parseWithZod } from "@conform-to/zod";
-import Link from "next/link";
-import React from "react";
-import { useFormState } from "react-dom";
+import { eventTypeSchema } from "@/app/lib/zodSchemas";
+import { EditEventTypeAction } from "@/app/actions";
 
-const CreateNewEvent = () => {
-  const [lastResult, action] = useFormState(CreateEventTypeAction, undefined);
+export function EditEventTypeForm() {
+  const [lastResult, action] = useFormState(EditEventTypeAction, undefined);
   const [form, fields] = useForm({
     // Sync the result of last submission
     lastResult,
@@ -112,6 +111,4 @@ const CreateNewEvent = () => {
       </Card>
     </div>
   );
-};
-
-export default CreateNewEvent;
+}

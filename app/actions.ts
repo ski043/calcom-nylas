@@ -146,6 +146,33 @@ export async function CreateEventTypeAction(
   return redirect("/dashboard");
 }
 
+export async function EditEventTypeAction(prevState: any, formData: FormData) {
+  const session = await requireUser();
+
+  const submission = parseWithZod(formData, {
+    schema: eventTypeSchema,
+  });
+
+  if (submission.status !== "success") {
+    return submission.reply();
+  }
+
+  const data = await prisma.eventType.update({
+    where: {
+      id: formData.get("id") as string,
+      userEmail: session.email as string,
+    },
+    data: {
+      title: submission.value.title,
+      duration: submission.value.duration,
+      url: submission.value.url,
+      description: submission.value.description,
+    },
+  });
+
+  return redirect("/dashboard");
+}
+
 /* export async function updateAvailabilityAction(formData: FormData) {
   const session = await requireUser();
 

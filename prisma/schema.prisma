@@ -29,7 +29,7 @@ model User {
 }
 
 model Availability {
-  id Int @id @default(autoincrement())
+  id String @id @default(uuid())
 
   day      Day
   fromTime String // e.g., '08:00'
@@ -51,7 +51,7 @@ enum Day {
 }
 
 model EventType {
-  id          Int     @id @default(autoincrement())
+  id          String  @id @default(uuid())
   title       String
   duration    Int
   url         String
