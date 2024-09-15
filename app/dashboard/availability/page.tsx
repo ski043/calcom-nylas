@@ -23,6 +23,7 @@ import { Switch } from "@/components/ui/switch";
 import { notFound } from "next/navigation";
 import React from "react";
 import { requireUser } from "@/app/lib/hooks";
+import { updateAvailabilityAction } from "@/app/actions";
 
 async function getData(userEmail: string) {
   const data = await prisma.availability.findMany({
@@ -41,7 +42,7 @@ async function getData(userEmail: string) {
   return data;
 }
 
-const AvailablityPage = async () => {
+const AvailabilityPage = async () => {
   const session = await requireUser();
   const data = await getData(session.email as string);
 
@@ -53,7 +54,7 @@ const AvailablityPage = async () => {
           In this section you can manage your availability.
         </CardDescription>
       </CardHeader>
-      <form>
+      <form action={updateAvailabilityAction}>
         <CardContent className="flex flex-col gap-y-4">
           {data.map((item) => (
             <div className="grid grid-cols-6 items-center gap-4" key={item.id}>
@@ -62,11 +63,6 @@ const AvailablityPage = async () => {
                 <Switch
                   name={`isActive-${item.id}`}
                   defaultChecked={item.isActive}
-                />
-                <input
-                  type="hidden"
-                  name={`isActiveHidden-${item.id}`}
-                  value={item.isActive ? "true" : "false"}
                 />
                 <p>{item.day}</p>
               </div>
@@ -109,4 +105,4 @@ const AvailablityPage = async () => {
   );
 };
 
-export default AvailablityPage;
+export default AvailabilityPage;

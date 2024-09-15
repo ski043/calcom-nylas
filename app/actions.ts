@@ -12,12 +12,14 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
 
-const availabilityUpdateSchema = z.object({
-  id: z.number(),
-  isActive: z.boolean(),
-  fromTime: z.string(),
-  tillTime: z.string(),
-});
+const availabilityUpdateSchema = z.array(
+  z.object({
+    id: z.string(),
+    isActive: z.boolean(),
+    fromTime: z.string(),
+    tillTime: z.string(),
+  })
+);
 
 export async function onboardingAction(prevState: any, formData: FormData) {
   const session = await requireUser();
@@ -224,54 +226,40 @@ export async function updateEventTypeStatusAction(
   }
 }
 
-/* export async function updateAvailabilityAction(formData: FormData) {
+export async function updateAvailabilityAction(formData: FormData) {
   const session = await requireUser();
 
-  const updates = [];
-  for (const [key, value] of formData.entries()) {
-    if (key.startsWith("$ACTION")) continue; // Skip Next.js internal fields
-
-    const [field, id] = key.split("-");
-    const index = parseInt(id) - 1; // Adjust for 0-based array indexing
-    if (!updates[index]) updates[index] = { id: parseInt(id) };
-
-    if (field === "isActive") {
-      updates[index][field] = value === "on";
-    } else if (field === "isActiveHidden") {
-      // Only set isActive if it wasn't already set by the switch
-      if (updates[index].isActive === undefined) {
-        updates[index].isActive = value === "true";
-      }
-    } else {
-      updates[index][field] = value;
-    }
-  }
-
-  // Filter out any undefined or empty entries
-  const validUpdates = updates.filter((update) => update && update.id);
-
-  console.log(validUpdates);
+  const rawData = Object.fromEntries(formData.entries());
+  const availabilityData = Object.keys(rawData)
+    .filter((key) => key.startsWith("id-"))
+    .map((key) => {
+      const id = key.replace("id-", "");
+      return {
+        id,
+        isActive: rawData[`isActive-${id}`] === "on",
+        fromTime: rawData[`fromTime-${id}`] as string,
+        tillTime: rawData[`tillTime-${id}`] as string,
+      };
+    });
 
   try {
-    await Promise.all(
-      validUpdates.map((update) =>
+    await prisma.$transaction(
+      availabilityData.map((item) =>
         prisma.availability.update({
-          where: {
-            id: Number(update.id),
-            userEmail: session.email as string,
-          },
+          where: { id: item.id },
           data: {
-            isActive: update.isActive,
-            fromTime: update.fromTime,
-            tillTime: update.tillTime,
+            isActive: item.isActive,
+            fromTime: item.fromTime,
+            tillTime: item.tillTime,
           },
         })
       )
     );
 
+    revalidatePath("/dashboard/availability");
     return { status: "success", message: "Availability updated successfully" };
   } catch (error) {
     console.error("Error updating availability:", error);
     return { status: "error", message: "Failed to update availability" };
   }
-} */
+}
