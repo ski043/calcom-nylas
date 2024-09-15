@@ -255,3 +255,48 @@ export async function updateAvailabilityAction(formData: FormData) {
     return { status: "error", message: "Failed to update availability" };
   }
 }
+
+export async function createMeetingAction() {
+  const now = Math.floor(Date.now() / 1000);
+
+  await nylas.events.create({
+    identifier: "4ee829c0-4f3e-44e5-b64a-791df8d210ea",
+    requestBody: {
+      title: "Meeting with Jan",
+      description: "this is just an test meeting",
+      when: {
+        startTime: now,
+        endTime: now + 3600,
+      },
+      conferencing: {
+        autocreate: {},
+        provider: "Google Meet",
+      },
+      participants: [
+        {
+          name: "Jan Marshal",
+          email: "janniklasmarzahl@gmail.com",
+          status: "yes",
+        },
+      ],
+    },
+    queryParams: {
+      calendarId: "jan@alenix.de",
+      notifyParticipants: true,
+    },
+  });
+}
+
+export async function cancelMeetingAction(formData: FormData) {
+  const session = await requireUser();
+
+  const data = await nylas.events.destroy({
+    eventId: formData.get("eventId") as string,
+    identifier: session.grantId as string,
+    queryParams: {
+      calendarId: session.email as string,
+    },
+  });
+
+  revalidatePath("/dashboard/meetings");
+}

@@ -25,8 +25,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { MenuActiveSwitcher } from "../components/dashboard/EventTypeSwitcher";
-import { useCallback } from "react";
-import { toast } from "sonner";
 import { CopyLinkMenuItem } from "../components/dashboard/CopyLinkMenuItem";
 
 async function getData(email: string) {
