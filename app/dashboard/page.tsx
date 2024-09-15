@@ -12,7 +12,7 @@ import {
   Trash,
   Users2,
 } from "lucide-react";
-import { Switch } from "@/components/ui/switch";
+
 import { EmptyState } from "../components/dashboard/EmptyState";
 
 import {
@@ -25,6 +25,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { MenuActiveSwitcher } from "../components/dashboard/EventTypeSwitcher";
+import { useCallback } from "react";
+import { toast } from "sonner";
+import { CopyLinkMenuItem } from "../components/dashboard/CopyLinkMenuItem";
 
 async function getData(email: string) {
   const data = await prisma.user.findUnique({
@@ -33,6 +36,7 @@ async function getData(email: string) {
     },
     select: {
       EventType: true,
+      username: true,
     },
   });
 
@@ -46,6 +50,7 @@ async function getData(email: string) {
 const DashbaordPage = async () => {
   const session = await requireUser();
   const data = await getData(session.email as string);
+
   return (
     <>
       <div className="flex items-center justify-between px-2">
@@ -84,14 +89,15 @@ const DashbaordPage = async () => {
                     <DropdownMenuLabel>Event</DropdownMenuLabel>
                     <DropdownMenuSeparator />
                     <DropdownMenuGroup>
-                      <DropdownMenuItem>
-                        <ExternalLink className="mr-2 h-4 w-4" />
-                        <span>Preview</span>
+                      <DropdownMenuItem asChild>
+                        <Link href={`/meeting/${data.username}/${item.url}`}>
+                          <ExternalLink className="mr-2 h-4 w-4" />
+                          <span>Preview</span>
+                        </Link>
                       </DropdownMenuItem>
-                      <DropdownMenuItem>
-                        <Link2 className="mr-2 h-4 w-4" />
-                        <span>Copy</span>
-                      </DropdownMenuItem>
+                      <CopyLinkMenuItem
+                        meetingUrl={`${process.env.w}/meeting/${data.username}/${item.url}`}
+                      />
                       <DropdownMenuItem asChild>
                         <Link href={`/dashboard/event/${item.id}`}>
                           <Pen className="mr-2 h-4 w-4" />

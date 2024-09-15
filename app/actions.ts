@@ -201,8 +201,6 @@ export async function updateEventTypeStatusAction(
   try {
     const session = await requireUser();
 
-    console.log(isChecked);
-
     const data = await prisma.eventType.update({
       where: {
         id: eventTypeId,
