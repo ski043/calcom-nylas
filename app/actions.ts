@@ -11,15 +11,7 @@ import {
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
-
-const availabilityUpdateSchema = z.array(
-  z.object({
-    id: z.string(),
-    isActive: z.boolean(),
-    fromTime: z.string(),
-    tillTime: z.string(),
-  })
-);
+import { nylas } from "./lib/nylas";
 
 export async function onboardingAction(prevState: any, formData: FormData) {
   const session = await requireUser();

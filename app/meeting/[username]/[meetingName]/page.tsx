@@ -1,11 +1,7 @@
 import React from "react";
 
 const MeetingPage = () => {
-  return (
-    <div>
-      <h1>yoo</h1>
-    </div>
-  );
+  return <div>MeetingPage</div>;
 };
 
 export default MeetingPage;
