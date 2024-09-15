@@ -10,6 +10,7 @@ import {
 } from "./lib/zodSchemas";
 import { redirect } from "next/navigation";
 import { z } from "zod";
+import { revalidatePath } from "next/cache";
 
 const availabilityUpdateSchema = z.object({
   id: z.number(),
@@ -185,6 +186,44 @@ export async function DeleteEventTypeAction(formData: FormData) {
   });
 
   return redirect("/dashboard");
+}
+
+export async function updateEventTypeStatusAction(
+  prevState: any,
+  {
+    eventTypeId,
+    isChecked,
+  }: {
+    eventTypeId: string;
+    isChecked: boolean;
+  }
+) {
+  try {
+    const session = await requireUser();
+
+    console.log(isChecked);
+
+    const data = await prisma.eventType.update({
+      where: {
+        id: eventTypeId,
+        userEmail: session.email as string,
+      },
+      data: {
+        active: isChecked,
+      },
+    });
+
+    revalidatePath(`/dashboard`);
+    return {
+      status: "success",
+      message: "EventType Status updated successfully",
+    };
+  } catch (error) {
+    return {
+      status: "error",
+      message: "Something went wrong",
+    };
+  }
 }
 
 /* export async function updateAvailabilityAction(formData: FormData) {
