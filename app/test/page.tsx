@@ -1,70 +1,72 @@
-"use client";
-
-import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
 import { Card, CardContent } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
-import face from "@/public/face.jpeg";
-import { Camera, Timer } from "lucide-react";
+import React from "react";
+import ProfilePic from "@/public/face.jpeg";
 import Image from "next/image";
-import { useState } from "react";
+import { BookMarked, Calendar, Clock } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
-const TestPage = () => {
-  const [date, setDate] = useState<Date | undefined>(new Date());
-
+const BookingPage = () => {
   return (
-    <div className="min-h-screen w-screen bg-gray-100 flex items-center justify-center  ">
-      <Card className="max-w-[1000px] lg:mx-auto mx-5">
-        <CardContent className="p-6 grid lg:grid-cols-7 grid-cols-1 ">
-          <div className="col-span-2 ">
+    <div className="min-h-screen w-screen flex items-center justify-center">
+      <Card className="max-w-[850px] mx-auto ">
+        <CardContent className="p-5 grid grid-cols-7">
+          <div className="col-span-2">
             <Image
-              src={face}
-              width={35}
-              height={35}
-              className="rounded-full"
-              alt="face"
+              src={ProfilePic}
+              alt="profile"
+              className="size-7 rounded-full"
             />
-            <p className="text-gray-700 text-sm font-semibold pt-1">
-              Shadcn Cal
+            <p className="text-sm font-medium text-[#6B7280] mt-1">
+              Alex Fisher
             </p>
-            <p className=" text-2xl font-bold pt-5">Demo</p>
-            <p className=" text-sm text-gray-600">
-              Hey this meeting is there to meet me. my name is jan marshal and
-              this meeting will be 30 mins in total
+            <h1 className="text-xl font-semibold mt-2">Design Workshop</h1>
+            <p className="text-sm font-medium text-[#374151]">
+              A longer chat to run through design.
             </p>
-            <Separator className="my-5" />
-            <p className="flex items-center mt-2">
-              <Timer className="size-4 mr-1 text-primary" />
-              <span className="text-gray-600 text-sm ">15 mins</span>
-            </p>
-            <p className="flex items-center mt-2">
-              <Camera className="size-4 mr-1 text-primary" />
-              <span className="text-gray-600 text-sm ">
-                Details provided upon confirmation.
-              </span>
-            </p>
-          </div>
 
-          <div className="col-span-3 w-full flex items-center justify-center">
-            <Calendar mode="single" selected={date} onSelect={setDate} />
+            <div className="mt-5 grid gap-y-2">
+              <p className="flex items-center">
+                <Calendar className="size-4 mr-2 text-[#6B7280]" />
+                <span className="text-sm font-medium text-[#374151]">
+                  Friday, 24th June
+                </span>
+              </p>
+              <p className="flex items-center">
+                <Clock className="size-4 mr-2 text-[#6B7280]" />
+                <span className="text-sm font-medium text-[#374151]">
+                  30 Mins
+                </span>
+              </p>
+              <p className="flex items-center">
+                <BookMarked className="size-4 mr-2 text-[#6B7280]" />
+                <span className="text-sm font-medium text-[#374151]">
+                  Google Meet
+                </span>
+              </p>
+            </div>
+          </div>
+          <div className="col-span-3">
+            <p className="text-base font-semibold">
+              June <span className="text-sm text-[#6B7280]">2022</span>
+            </p>
           </div>
 
           <div className="col-span-2">
-            <h1>Time</h1>
-            <div className="grid gap-y-2 mt-3">
-              <Button variant="outline" className="w-full">
-                15:00
-              </Button>
-              <Button variant="outline" className="w-full">
-                15:00
-              </Button>
-              <Button variant="outline" className="w-full">
-                15:00
-              </Button>
-              <Button variant="outline" className="w-full">
-                15:00
-              </Button>
-            </div>
+            <p className="text-base font-semibold">
+              Fri, <span className="text-sm text-[#6B7280]">Jun 24</span>
+            </p>
+            <Button variant="outline" className="w-full mt-3">
+              10:00
+            </Button>
+            <Button variant="outline" className="w-full mt-3">
+              10:00
+            </Button>
+            <Button variant="outline" className="w-full mt-3">
+              10:00
+            </Button>
+            <Button variant="outline" className="w-full mt-3">
+              10:00
+            </Button>
           </div>
         </CardContent>
       </Card>
@@ -72,4 +74,4 @@ const TestPage = () => {
   );
 };
 
-export default TestPage;
+export default BookingPage;
