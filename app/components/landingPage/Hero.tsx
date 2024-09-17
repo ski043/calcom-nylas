@@ -2,6 +2,7 @@ import Image from "next/image";
 
 import { Button } from "@/components/ui/button";
 import HeroImage from "@/public/hero.png";
+import { AuthModal } from "./AuthModal";
 
 export function Hero() {
   return (
@@ -21,10 +22,8 @@ export function Hero() {
             Setting up your blog is hard and time consuming. We make it easy for
             you to create a blog in minutes
           </p>
-          <div className="flex items-center gap-x-5 w-full justify-center mt-5 mb-12">
-            <Button variant="secondary">Sign in</Button>
-
-            <Button>Try for free</Button>
+          <div className=" mt-5 mb-12">
+            <AuthModal />
           </div>
         </div>
 

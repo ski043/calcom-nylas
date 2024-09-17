@@ -1,8 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
 import Logo from "@/public/logo.png";
-import { Button } from "@/components/ui/button";
+
 import { ThemeToggle } from "../dashboard/ThemeToggle";
+import { AuthModal } from "./AuthModal";
 export function Navbar() {
   return (
     <div className="relative flex flex-col w-full py-5 mx-auto md:flex-row md:items-center md:justify-between">
@@ -22,9 +23,7 @@ export function Navbar() {
       <nav className="hidden md:flex md:justify-end md:space-x-4">
         <ThemeToggle />
 
-        <Button variant="secondary">Sign in</Button>
-
-        <Button>Sign up</Button>
+        <AuthModal />
       </nav>
     </div>
   );
