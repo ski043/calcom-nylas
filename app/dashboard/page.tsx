@@ -4,14 +4,7 @@ import { notFound } from "next/navigation";
 import React from "react";
 import prisma from "../lib/db";
 import { requireUser } from "../lib/hooks";
-import {
-  ExternalLink,
-  Link2,
-  Pen,
-  Settings,
-  Trash,
-  Users2,
-} from "lucide-react";
+import { ExternalLink, Pen, Settings, Trash, Users2 } from "lucide-react";
 
 import { EmptyState } from "../components/dashboard/EmptyState";
 
@@ -27,10 +20,10 @@ import {
 import { MenuActiveSwitcher } from "../components/dashboard/EventTypeSwitcher";
 import { CopyLinkMenuItem } from "../components/dashboard/CopyLinkMenuItem";
 
-async function getData(email: string) {
+async function getData(id: string) {
   const data = await prisma.user.findUnique({
     where: {
-      email: email,
+      id: id,
     },
     select: {
       EventType: true,
@@ -47,7 +40,7 @@ async function getData(email: string) {
 
 const DashbaordPage = async () => {
   const session = await requireUser();
-  const data = await getData(session.email as string);
+  const data = await getData(session.user?.id as string);
 
   return (
     <>

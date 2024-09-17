@@ -7,12 +7,13 @@ import { Hero } from "./components/landingPage/Hero";
 import { Logos } from "./components/landingPage/Logos";
 import { Features } from "./components/landingPage/Features";
 import { Testimonial } from "./components/landingPage/Testimonial";
+import { auth } from "./lib/auth";
 
 export default async function Home() {
-  const session = await getIronSession<SessionData>(cookies(), sessionOptions);
+  const session = await auth();
 
-  if (session.grantId) {
-    return redirect("/dashboard ");
+  if (session?.user) {
+    return redirect("/dashboard");
   }
 
   return (

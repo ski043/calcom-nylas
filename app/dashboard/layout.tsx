@@ -36,26 +36,38 @@ import Image from "next/image";
 import { DasboardLinks } from "../components/dashboard/DasboardLinks";
 import { ThemeToggle } from "../components/dashboard/ThemeToggle";
 import { Toaster } from "@/components/ui/sonner";
+import { auth } from "../lib/auth";
 
-async function getData(email: string) {
+async function getData(id: string) {
   const data = await prisma.user.findUnique({
     where: {
-      email: email,
+      id: id,
     },
     select: {
       username: true,
+      grantId: true,
     },
   });
 
   if (!data?.username) {
     return redirect("/onboarding");
   }
+
+  if (!data.grantId) {
+    return redirect("/onboarding/grant-id");
+  }
+
+  return data;
 }
 
 export default async function Dashboard({ children }: { children: ReactNode }) {
-  const session = await requireUser();
+  const session = await auth();
 
-  const data = await getData(session.email as string);
+  if (!session?.user) {
+    return redirect("/");
+  }
+
+  const data = await getData(session.user.id as string);
 
   return (
     <>
@@ -167,7 +179,7 @@ export default async function Dashboard({ children }: { children: ReactNode }) {
                     className="rounded-full"
                   >
                     <Image
-                      src={session.profileImage as string}
+                      src={session.user.image as string}
                       alt="Profile"
                       width={20}
                       height={20}

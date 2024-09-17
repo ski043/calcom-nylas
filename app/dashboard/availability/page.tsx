@@ -23,10 +23,10 @@ import React from "react";
 import { requireUser } from "@/app/lib/hooks";
 import { updateAvailabilityAction } from "@/app/actions";
 
-async function getData(userEmail: string) {
+async function getData(userId: string) {
   const data = await prisma.availability.findMany({
     where: {
-      userEmail: userEmail,
+      userId: userId,
     },
     orderBy: {
       id: "asc",
@@ -42,7 +42,7 @@ async function getData(userEmail: string) {
 
 const AvailabilityPage = async () => {
   const session = await requireUser();
-  const data = await getData(session.email as string);
+  const data = await getData(session.user?.id as string);
 
   return (
     <Card>

@@ -38,19 +38,17 @@ export function onboardingSchema(options?: {
         })
       ),
     fullName: z.string().min(3).max(150),
-    description: z.string().min(3).max(1500),
   });
 }
 
 export const onboardingSchemaLocale = z.object({
   username: z.string().min(3).max(150),
   fullName: z.string().min(3).max(150),
-  description: z.string().min(3).max(1500),
 });
 
 export const aboutSettingsSchema = z.object({
   fullName: z.string().min(3).max(150),
-  description: z.string().min(3).max(1500),
+
   profileImage: z.string(),
 });
 

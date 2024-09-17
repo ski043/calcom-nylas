@@ -27,16 +27,11 @@ import { toast } from "sonner";
 interface iAppProps {
   fullName: string;
   email: string;
-  description: string;
+
   profileImage: string;
 }
 
-export function SettingsForm({
-  description,
-  fullName,
-  email,
-  profileImage,
-}: iAppProps) {
+export function SettingsForm({ fullName, email, profileImage }: iAppProps) {
   const [lastResult, action] = useFormState(SettingsAction, undefined);
   const [currentProfileImage, setCurrentProfileImage] = useState(profileImage);
 
@@ -80,15 +75,7 @@ export function SettingsForm({
             <Label>Email</Label>
             <Input disabled placeholder="Jan Marshall" defaultValue={email} />
           </div>
-          <div>
-            <Label>Description</Label>
-            <Textarea
-              name={fields.description.name}
-              key={fields.description.key}
-              defaultValue={description}
-            />
-            <p className="text-red-500 text-sm">{fields.description.errors}</p>
-          </div>
+
           <div className="grid gap-y-5">
             <input
               type="hidden"

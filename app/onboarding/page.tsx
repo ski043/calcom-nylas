@@ -75,19 +75,6 @@ const OnboardingPage = () => {
               </div>
               <p className="text-red-500 text-sm">{fields.username.errors}</p>
             </div>
-
-            <div className="grid gap-y-2">
-              <Label>Description</Label>
-              <Textarea
-                name={fields.description.name}
-                defaultValue={fields.description.initialValue}
-                key={fields.description.key}
-                placeholder="A small Description about yourself"
-              />
-              <p className="text-red-500 text-sm">
-                {fields.description.errors}
-              </p>
-            </div>
           </CardContent>
           <CardFooter className="w-full">
             <SubmitButton className="w-full" text="Submit" />

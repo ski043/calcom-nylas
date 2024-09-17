@@ -16,16 +16,15 @@ import { Textarea } from "@/components/ui/textarea";
 import { notFound } from "next/navigation";
 import React from "react";
 
-async function getData(email: string) {
+async function getData(id: string) {
   const data = await prisma.user.findUnique({
     where: {
-      email: email,
+      id: id,
     },
     select: {
-      fullName: true,
+      name: true,
       email: true,
-      description: true,
-      profileImage: true,
+      image: true,
     },
   });
 
@@ -38,13 +37,12 @@ async function getData(email: string) {
 
 const SettingsPage = async () => {
   const session = await requireUser();
-  const data = await getData(session.email as string);
+  const data = await getData(session.user?.id as string);
   return (
     <SettingsForm
-      description={data.description as string}
       email={data.email}
-      fullName={data.fullName as string}
-      profileImage={data.profileImage as string}
+      fullName={data.name as string}
+      profileImage={data.image as string}
     />
   );
 };

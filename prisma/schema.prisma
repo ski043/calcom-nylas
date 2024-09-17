@@ -15,20 +15,19 @@ datasource db {
 }
 
 model User {
-  id            String    @id @default(cuid())
+  id            String         @id @default(uuid())
   name          String?
-  email         String    @unique
+  email         String         @unique
   emailVerified DateTime?
-  image         String?
+  image         String?        @default("https://avatars.githubusercontent.com/u/10367109?v=4")
   accounts      Account[]
   sessions      Session[]
   grantId       String?
-  username      String?   @unique
-
-  createdAt    DateTime       @default(now())
-  updatedAt    DateTime       @updatedAt
-  Availability Availability[]
-  EventType    EventType[]
+  username      String?        @unique
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  Availability  Availability[]
+  EventType     EventType[]
 }
 
 model Account {
@@ -78,8 +77,8 @@ model Availability {
   tillTime String // e.g., '18:00'
   isActive Boolean @default(true) // Toggle availability for the day
 
-  User      User   @relation(fields: [userEmail], references: [email])
-  userEmail String
+  User   User   @relation(fields: [userId], references: [id])
+  userId String
 }
 
 enum Day {
@@ -100,6 +99,6 @@ model EventType {
   description String
   active      Boolean @default(true)
 
-  user      User   @relation(fields: [userEmail], references: [email])
-  userEmail String
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
 }

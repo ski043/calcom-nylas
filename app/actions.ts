@@ -9,7 +9,7 @@ import {
   onboardingSchema,
 } from "./lib/zodSchemas";
 import { redirect } from "next/navigation";
-import { z } from "zod";
+
 import { revalidatePath } from "next/cache";
 import { nylas } from "./lib/nylas";
 
@@ -37,13 +37,13 @@ export async function onboardingAction(prevState: any, formData: FormData) {
 
   const user = await prisma.user.update({
     where: {
-      email: session.email as string,
+      id: session.user?.id as string,
     },
     data: {
       username: submission.value.username,
-      fullName: submission.value.fullName,
-      description: submission.value.description,
-      availability: {
+      name: submission.value.fullName,
+
+      Availability: {
         createMany: {
           data: [
             {
@@ -103,12 +103,11 @@ export async function SettingsAction(prevState: any, formData: FormData) {
 
   const user = await prisma.user.update({
     where: {
-      email: session.email as string,
+      id: session.user?.id as string,
     },
     data: {
-      fullName: submission.value.fullName,
-      description: submission.value.description,
-      profileImage: submission.value.profileImage,
+      name: submission.value.fullName,
+      image: submission.value.profileImage,
     },
   });
 
@@ -135,7 +134,7 @@ export async function CreateEventTypeAction(
       duration: submission.value.duration,
       url: submission.value.url,
       description: submission.value.description,
-      userEmail: session.email as string,
+      userId: session.user?.id as string,
     },
   });
 
@@ -156,7 +155,7 @@ export async function EditEventTypeAction(prevState: any, formData: FormData) {
   const data = await prisma.eventType.update({
     where: {
       id: formData.get("id") as string,
-      userEmail: session.email as string,
+      userId: session.user?.id as string,
     },
     data: {
       title: submission.value.title,
@@ -175,7 +174,7 @@ export async function DeleteEventTypeAction(formData: FormData) {
   const data = await prisma.eventType.delete({
     where: {
       id: formData.get("id") as string,
-      userEmail: session.email as string,
+      userId: session.user?.id as string,
     },
   });
 
@@ -198,7 +197,7 @@ export async function updateEventTypeStatusAction(
     const data = await prisma.eventType.update({
       where: {
         id: eventTypeId,
-        userEmail: session.email as string,
+        userId: session.user?.id as string,
       },
       data: {
         active: isChecked,
@@ -290,11 +289,21 @@ export async function createMeetingAction() {
 export async function cancelMeetingAction(formData: FormData) {
   const session = await requireUser();
 
+  const userData = await prisma.user.findUnique({
+    where: {
+      id: session.user?.id as string,
+    },
+  });
+
+  if (!userData) {
+    throw new Error("User not found");
+  }
+
   const data = await nylas.events.destroy({
     eventId: formData.get("eventId") as string,
-    identifier: session.grantId as string,
+    identifier: userData?.grantId as string,
     queryParams: {
-      calendarId: session.email as string,
+      calendarId: userData?.email as string,
     },
   });
 
