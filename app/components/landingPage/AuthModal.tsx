@@ -12,6 +12,7 @@ import GooleLogo from "@/public/google.svg";
 import GitHubLogo from "@/public/github.svg";
 
 import { signIn } from "@/app/lib/auth";
+import { GitHubAuthButton, GoogleAuthButton } from "../SubmitButton";
 
 export function AuthModal() {
   return (
@@ -28,19 +29,13 @@ export function AuthModal() {
         </DialogHeader>
         <div className="flex flex-col gap-3 mt-5">
           <form
+            className="w-full"
             action={async () => {
               "use server";
               await signIn("google");
             }}
           >
-            <Button variant="outline">
-              <Image
-                src={GooleLogo}
-                className="size-4 mr-2"
-                alt="Google Logo"
-              />
-              Sign in with Google
-            </Button>
+            <GoogleAuthButton />
           </form>
 
           <form
@@ -50,14 +45,7 @@ export function AuthModal() {
               await signIn("github");
             }}
           >
-            <Button variant="outline" className="w-full">
-              <Image
-                src={GitHubLogo}
-                className="size-4 mr-2 dark:invert"
-                alt="GitHub Logo"
-              />
-              Sign in with GitHub
-            </Button>
+            <GitHubAuthButton />
           </form>
         </div>
       </DialogContent>

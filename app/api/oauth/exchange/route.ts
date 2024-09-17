@@ -1,14 +1,13 @@
 import prisma from "@/app/lib/db";
+import { requireUser } from "@/app/lib/hooks";
 import { nylas, nylasConfig } from "@/app/lib/nylas";
-import { SessionData, sessionOptions } from "@/app/lib/session";
-import { getIronSession } from "iron-session";
 
-import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { NextRequest } from "next/server";
 
 export async function GET(req: NextRequest) {
   console.log("Received callback from Nylas");
+  const session = await requireUser();
   const url = new URL(req.url as string);
   const code = url.searchParams.get("code");
 
@@ -26,28 +25,16 @@ export async function GET(req: NextRequest) {
 
   try {
     const response = await nylas.auth.exchangeCodeForToken(codeExchangePayload);
-    const { grantId, email } = response;
+    const { grantId } = response;
 
-    await prisma.user.upsert({
-      where: { email }, // Checks if a user with this email exists
-      update: { grantId }, // Updates if user exists
-      create: {
-        email: email,
+    await prisma.user.update({
+      where: {
+        id: session.user?.id as string,
+      },
+      data: {
         grantId: grantId,
-        profileImage: `https://avatar.vercel.sh/${email}`,
-      }, // Creates a new user if it doesn't exist
+      },
     });
-
-    const session = await getIronSession<SessionData>(
-      cookies(),
-      sessionOptions
-    );
-
-    session.email = email;
-    session.grantId = grantId;
-    session.profileImage = `https://avatar.vercel.sh/${email}`;
-
-    await session.save();
 
     console.log({ grantId });
   } catch (error) {

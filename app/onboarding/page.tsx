@@ -17,7 +17,6 @@ import { parseWithZod } from "@conform-to/zod";
 import { onboardingSchemaLocale } from "../lib/zodSchemas";
 import { useForm } from "@conform-to/react";
 import { onboardingAction } from "../actions";
-import { Textarea } from "@/components/ui/textarea";
 
 const OnboardingPage = () => {
   const [lastResult, action] = useFormState(onboardingAction, undefined);
