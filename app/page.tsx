@@ -1,6 +1,3 @@
-import { getIronSession } from "iron-session";
-import { cookies } from "next/headers";
-import { SessionData, sessionOptions } from "./lib/session";
 import { redirect } from "next/navigation";
 import { Navbar } from "./components/landingPage/Navbar";
 import { Hero } from "./components/landingPage/Hero";
