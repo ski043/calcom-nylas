@@ -1,6 +1,5 @@
 import Image from "next/image";
 
-import { Button } from "@/components/ui/button";
 import HeroImage from "@/public/hero.png";
 import { AuthModal } from "./AuthModal";
 

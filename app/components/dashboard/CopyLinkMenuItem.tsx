@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { Link2 } from "lucide-react";
 import { toast } from "sonner";

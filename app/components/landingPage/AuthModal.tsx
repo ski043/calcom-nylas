@@ -2,19 +2,15 @@ import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
-  DialogFooter,
   DialogHeader,
-  DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+
 import Logo from "@/public/logo.png";
 import Image from "next/image";
 import GooleLogo from "@/public/google.svg";
 import GitHubLogo from "@/public/github.svg";
-import { Separator } from "@/components/ui/separator";
+
 import { signIn } from "@/app/lib/auth";
 
 export function AuthModal() {
