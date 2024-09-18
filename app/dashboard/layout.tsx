@@ -36,7 +36,7 @@ import Image from "next/image";
 import { DasboardLinks } from "../components/dashboard/DasboardLinks";
 import { ThemeToggle } from "../components/dashboard/ThemeToggle";
 import { Toaster } from "@/components/ui/sonner";
-import { auth } from "../lib/auth";
+import { auth, signOut } from "../lib/auth";
 
 async function getData(id: string) {
   const data = await prisma.user.findUnique({
@@ -195,7 +195,15 @@ export default async function Dashboard({ children }: { children: ReactNode }) {
                     <Link href="/dashboard/settings">Settings</Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
-                    <Link href="/api/auth/logout">Logout</Link>
+                    <form
+                      className="w-full"
+                      action={async () => {
+                        "use server";
+                        await signOut();
+                      }}
+                    >
+                      <button className="w-full text-left">Log out</button>
+                    </form>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
