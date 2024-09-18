@@ -25,7 +25,7 @@ export async function GET(req: NextRequest) {
 
   try {
     const response = await nylas.auth.exchangeCodeForToken(codeExchangePayload);
-    const { grantId } = response;
+    const { grantId, email } = response;
 
     await prisma.user.update({
       where: {
@@ -33,6 +33,7 @@ export async function GET(req: NextRequest) {
       },
       data: {
         grantId: grantId,
+        grantEmail: email,
       },
     });
 

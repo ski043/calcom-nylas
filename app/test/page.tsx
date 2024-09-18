@@ -18,7 +18,6 @@ import { Separator } from "@/components/ui/separator";
 
 const BookingPage = () => {
   const router = useRouter();
-  const searchParams = useSearchParams();
 
   const [timeZone, setTimeZone] = useState("America/New_York");
   const [date, setDate] = useState(today(getLocalTimeZone()));
@@ -97,19 +96,19 @@ const BookingPage = () => {
 
           <div>
             <p className="text-base font-semibold">
-              Fri, <span className="text-sm text-[#6B7280]">Jun 24</span>
+              Fri, <span className="text-sm text-[#6B7280]">Sept. 27</span>
             </p>
             <Button variant="outline" className="w-full mt-3">
               10:00
             </Button>
             <Button variant="outline" className="w-full mt-3">
-              10:00
+              11:00
             </Button>
             <Button variant="outline" className="w-full mt-3">
-              10:00
+              12:00
             </Button>
             <Button variant="outline" className="w-full mt-3">
-              10:00
+              13:00
             </Button>
           </div>
         </CardContent>

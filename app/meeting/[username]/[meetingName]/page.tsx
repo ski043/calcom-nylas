@@ -1,124 +1,236 @@
-"use client";
-
-import { Calendar } from "@/app/components/dashboard/calendar";
-import { Button } from "@/components/ui/button";
-
-import { Card, CardContent } from "@/components/ui/card";
-
-import { useRouter, useSearchParams } from "next/navigation";
+import prisma from "@/app/lib/db";
+import { nylas } from "@/app/lib/nylas";
+import { notFound } from "next/navigation";
 import React from "react";
-import { DateValue, useLocale } from "react-aria-components";
-import {
-  type CalendarDate,
-  getLocalTimeZone,
-  getWeeksInMonth,
-  today,
-} from "@internationalized/date";
+import { startOfDay, addDays } from "date-fns";
+import { Card, CardContent } from "@/components/ui/card";
+import Image from "next/image";
+import { BookMarked, CalendarX2, Clock } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
+import { Button } from "@/components/ui/button";
+import { RenderCalendar } from "@/app/components/demo/RenderCalendar";
+import { TimeSlots } from "@/app/components/TimeSlots";
 
-const MeetingPage = () => {
-  const router = useRouter();
-  const { locale } = useLocale();
+const targetDate = new Date(2024, 8, 19); // Note: month is 0-indexed, so 8 is September
+const nextDay = addDays(targetDate, 1);
 
-  const searchParams = useSearchParams();
-  const dateParam = searchParams.get("date");
-  const slotParam = searchParams.get("slot");
+async function getData(userName: string) {
+  const data = await prisma.user.findUnique({
+    where: {
+      username: userName,
+    },
+    select: {
+      grantEmail: true,
+      grantId: true,
+      image: true,
+      Availability: true,
+    },
+  });
+  /* const data = await prisma.availability.findMany({
+    where: {
+      User: {
+        username: userName,
+      },
+    },
 
-  const [timeZone, setTimeZone] = React.useState("America/New_York");
-  const [date, setDate] = React.useState(today(getLocalTimeZone()));
-  const [focusedDate, setFocusedDate] = React.useState<CalendarDate | null>(
-    date
-  );
+    select: {
+      User: {
+        select: {
+          grantId: true,
+          grantEmail: true,
+        },
+      },
+      day: true,
+      fromTime: true,
+      tillTime: true,
+      isActive: true,
+    },
+  }); */
 
-  const weeksInMonth = getWeeksInMonth(focusedDate as DateValue, locale);
+  const nylasCalendarData = await nylas.calendars.getFreeBusy({
+    identifier: data?.grantId as string,
+    requestBody: {
+      startTime: Math.floor(targetDate.getTime() / 1000),
+      endTime: Math.floor(nextDay.getTime() / 1000),
+      emails: [data?.grantEmail as string],
+    },
+  });
 
-  const handleChangeDate = (date: DateValue) => {
-    setDate(date as CalendarDate);
-    const url = new URL(window.location.href);
-    url.searchParams.set(
-      "date",
-      date.toDate(timeZone).toISOString().split("T")[0]
-    );
-    router.push(url.toString());
-  };
+  if (!data || !nylasCalendarData) {
+    return notFound();
+  }
 
-  const handleChangeAvailableTime = (time: string) => {
-    const timeValue = time.split(":").join(" ");
+  return { data, nylasCalendarData };
+}
 
-    const match = timeValue.match(/^(\d{1,2}) (\d{2})([ap]m)?$/i);
-    if (!match) {
-      console.error("Invalid time format");
-      return null;
-    }
+const MeetingPagee = async ({
+  params,
+  searchParams,
+}: {
+  params: { username: string; meetingName: string };
+  searchParams: { date?: string };
+}) => {
+  const { data, nylasCalendarData } = await getData(params.username);
+  const selectedDate = searchParams.date
+    ? new Date(searchParams.date)
+    : new Date();
 
-    let hours = Number.parseInt(match[1]);
-    const minutes = Number.parseInt(match[2]);
-    const isPM = match[3] && match[3].toLowerCase() === "pm";
-
-    if (isPM && (hours < 1 || hours > 12)) {
-      console.error("Time out of range (1-12) in 12-hour format");
-      return null;
-    }
-
-    if (isPM && hours !== 12) {
-      hours += 12;
-    } else if (!isPM && hours === 12) {
-      hours = 0;
-    }
-
-    const currentDate = date.toDate(timeZone);
-    currentDate.setHours(hours, minutes);
-
-    const url = new URL(window.location.href);
-    url.searchParams.set("slot", currentDate.toISOString());
-    router.push(url.toString());
-  };
-
-  const showForm = !!dateParam && !!slotParam;
   return (
-    <Calendar
-      minValue={today(getLocalTimeZone())}
-      defaultValue={today(getLocalTimeZone())}
-      value={date}
-      onChange={handleChangeDate}
-      onFocusChange={(focused) => setFocusedDate(focused)}
-    />
-    /*  <div className="min-h-screen w-screen flex items-center justify-center">
-      <Card className="max-w-[850px] w-full">
-        <CardContent className="p-6 grid grid-cols-7">
-          <div className="col-span-2">
-            <p>john fisher</p>
-          </div>
-          <div className="col-span-3 flex  justify-center">
-            <Calendar
-              minValue={today(getLocalTimeZone())}
-              defaultValue={today(getLocalTimeZone())}
-              value={date}
-              onChange={handleChangeDate}
-              onFocusChange={(focused) => setFocusedDate(focused)}
+    <div className="min-h-screen w-screen flex items-center justify-center p-4">
+      <Card className="w-full max-w-[1000px] mx-auto">
+        <CardContent className="p-5 flex flex-col md:grid md:grid-cols-[1fr,auto,1fr,auto,1fr] md:gap-4">
+          <div>
+            <Image
+              src={data.image as string}
+              alt="profile"
+              className="size-7 rounded-full"
+              width={30}
+              height={30}
             />
+            <p className="text-sm font-medium text-[#6B7280] mt-1">
+              Alex Fisher
+            </p>
+            <h1 className="text-xl font-semibold mt-2">Design Workshop</h1>
+            <p className="text-sm font-medium text-[#374151]">
+              A longer chat to run through design.
+            </p>
+
+            <div className="mt-5 grid gap-y-2">
+              <p className="flex items-center">
+                <CalendarX2 className="size-4 mr-2 text-[#6B7280]" />
+                <span className="text-sm font-medium text-[#374151]">
+                  Friday, 24th June
+                </span>
+              </p>
+              <p className="flex items-center">
+                <Clock className="size-4 mr-2 text-[#6B7280]" />
+                <span className="text-sm font-medium text-[#374151]">
+                  30 Mins
+                </span>
+              </p>
+              <p className="flex items-center">
+                <BookMarked className="size-4 mr-2 text-[#6B7280]" />
+                <span className="text-sm font-medium text-[#374151]">
+                  Google Meet
+                </span>
+              </p>
+            </div>
           </div>
 
-          <div className="col-span-2 grid gap-y-5">
-            <Button className="w-full" variant="secondary">
-              09:00
-            </Button>
-            <Button className="w-full" variant="secondary">
-              09:00
-            </Button>
-            <Button className="w-full" variant="secondary">
-              09:00
-            </Button>
-            <Button className="w-full" variant="secondary">
-              09:00
-            </Button>
-            <Button className="w-full" variant="secondary">
-              09:00
-            </Button>
+          <Separator className="my-4 md:hidden" />
+          <Separator
+            orientation="vertical"
+            className="hidden md:block h-full w-[1px]"
+          />
+
+          <div className="my-4 md:my-0">
+            <RenderCalendar />
           </div>
+
+          <Separator className="my-4 md:hidden" />
+          <Separator
+            orientation="vertical"
+            className="hidden md:block h-full w-[1px]"
+          />
+
+          <TimeSlots selectedDate={selectedDate} username={params.username} />
         </CardContent>
       </Card>
-    </div> */
+    </div>
   );
 };
 
-export default MeetingPage;
+export default MeetingPagee;
+
+/* 
+{
+  "requestId": "1727479444-11256528-1054-41fd-bc3d-966780014445",
+  "data": [
+    {
+      "email": "janniklasmarzahl@gmail.com",
+      "object": "free_busy",
+      "timeSlots": [
+        {
+          "object": "time_slot",
+          "status": "busy",
+          "startTime": 1726749000,
+          "endTime": 1726752600
+        }
+      ]
+    }
+  ]
+} */
+
+/*   [
+    {
+      "User": {
+        "grantId": "2be90040-43d3-4cf7-821a-b1c53a33086b",
+        "grantEmail": "janniklasmarzahl@gmail.com"
+      },
+      "day": "Monday",
+      "fromTime": "08:00",
+      "tillTime": "18:00",
+      "isActive": true
+    },
+    {
+      "User": {
+        "grantId": "2be90040-43d3-4cf7-821a-b1c53a33086b",
+        "grantEmail": "janniklasmarzahl@gmail.com"
+      },
+      "day": "Tuesday",
+      "fromTime": "08:00",
+      "tillTime": "18:00",
+      "isActive": true
+    },
+    {
+      "User": {
+        "grantId": "2be90040-43d3-4cf7-821a-b1c53a33086b",
+        "grantEmail": "janniklasmarzahl@gmail.com"
+      },
+      "day": "Wednesday",
+      "fromTime": "08:00",
+      "tillTime": "18:00",
+      "isActive": true
+    },
+    {
+      "User": {
+        "grantId": "2be90040-43d3-4cf7-821a-b1c53a33086b",
+        "grantEmail": "janniklasmarzahl@gmail.com"
+      },
+      "day": "Thursday",
+      "fromTime": "08:00",
+      "tillTime": "18:00",
+      "isActive": true
+    },
+    {
+      "User": {
+        "grantId": "2be90040-43d3-4cf7-821a-b1c53a33086b",
+        "grantEmail": "janniklasmarzahl@gmail.com"
+      },
+      "day": "Friday",
+      "fromTime": "08:00",
+      "tillTime": "18:00",
+      "isActive": true
+    },
+    {
+      "User": {
+        "grantId": "2be90040-43d3-4cf7-821a-b1c53a33086b",
+        "grantEmail": "janniklasmarzahl@gmail.com"
+      },
+      "day": "Saturday",
+      "fromTime": "08:00",
+      "tillTime": "18:00",
+      "isActive": true
+    },
+    {
+      "User": {
+        "grantId": "2be90040-43d3-4cf7-821a-b1c53a33086b",
+        "grantEmail": "janniklasmarzahl@gmail.com"
+      },
+      "day": "Sunday",
+      "fromTime": "08:00",
+      "tillTime": "18:00",
+      "isActive": true
+    }
+  ]
+ */
