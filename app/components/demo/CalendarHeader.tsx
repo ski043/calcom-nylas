@@ -32,19 +32,19 @@ export function CalendarHeader({
       <VisuallyHidden>
         <h2>{calendarProps["aria-label"]}</h2>
       </VisuallyHidden>
-      {/* biome-ignore lint/a11y/useHeadingContent: <explanation> */}
-      <h2
-        aria-hidden
-        className="flex-1 align-center font-bold text-md text-gray-12"
-      >
-        {monthName} <span className="text-gray-11">{year}</span>
+
+      <h2 aria-hidden className="flex-1 align-center font-semibold text-base">
+        {monthName}{" "}
+        <span className="text-[#6B7280] text-sm font-medium">{year}</span>
       </h2>
-      <CalendarButton {...prevButtonProps}>
-        <ChevronLeftIcon className="size-4" />
-      </CalendarButton>
-      <CalendarButton {...nextButtonProps}>
-        <ChevronRightIcon className="size-4" />
-      </CalendarButton>
+      <div className="flex items-center gap-2">
+        <CalendarButton {...prevButtonProps}>
+          <ChevronLeftIcon className="size-4" />
+        </CalendarButton>
+        <CalendarButton {...nextButtonProps}>
+          <ChevronRightIcon className="size-4" />
+        </CalendarButton>
+      </div>
     </div>
   );
 }
