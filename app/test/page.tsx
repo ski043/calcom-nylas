@@ -1,16 +1,43 @@
+"use client";
+
 import { Card, CardContent } from "@/components/ui/card";
-import React from "react";
+import React, { useState } from "react";
 import ProfilePic from "@/public/face.jpeg";
 import Image from "next/image";
-import { BookMarked, Calendar, Clock } from "lucide-react";
+import { BookMarked, CalendarX2, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Calendar } from "../components/demo/Calendar";
+import { useRouter, useSearchParams } from "next/navigation";
+import {
+  CalendarDate,
+  DateValue,
+  getLocalTimeZone,
+  today,
+} from "@internationalized/date";
+import { Separator } from "@/components/ui/separator";
 
 const BookingPage = () => {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const [timeZone, setTimeZone] = useState("America/New_York");
+  const [date, setDate] = useState(today(getLocalTimeZone()));
+  const [focusedDate, setFocusedDate] = useState<CalendarDate | null>(date);
+
+  const handleChangeDate = (date: DateValue) => {
+    setDate(date as CalendarDate);
+    const url = new URL(window.location.href);
+    url.searchParams.set(
+      "date",
+      date.toDate(timeZone).toISOString().split("T")[0]
+    );
+    router.push(url.toString());
+  };
   return (
-    <div className="min-h-screen w-screen flex items-center justify-center">
-      <Card className="max-w-[850px] mx-auto ">
-        <CardContent className="p-5 grid grid-cols-7">
-          <div className="col-span-2">
+    <div className="min-h-screen w-screen flex items-center justify-center p-4">
+      <Card className="w-full max-w-[1000px] mx-auto">
+        <CardContent className="p-5 flex flex-col md:grid md:grid-cols-[1fr,auto,1fr,auto,1fr] md:gap-4">
+          <div>
             <Image
               src={ProfilePic}
               alt="profile"
@@ -26,7 +53,7 @@ const BookingPage = () => {
 
             <div className="mt-5 grid gap-y-2">
               <p className="flex items-center">
-                <Calendar className="size-4 mr-2 text-[#6B7280]" />
+                <CalendarX2 className="size-4 mr-2 text-[#6B7280]" />
                 <span className="text-sm font-medium text-[#374151]">
                   Friday, 24th June
                 </span>
@@ -45,13 +72,30 @@ const BookingPage = () => {
               </p>
             </div>
           </div>
-          <div className="col-span-3">
-            <p className="text-base font-semibold">
-              June <span className="text-sm text-[#6B7280]">2022</span>
-            </p>
+
+          <Separator className="my-4 md:hidden" />
+          <Separator
+            orientation="vertical"
+            className="hidden md:block h-full w-[1px]"
+          />
+
+          <div className="my-4 md:my-0">
+            <Calendar
+              minValue={today(getLocalTimeZone())}
+              defaultValue={today(getLocalTimeZone())}
+              value={date}
+              onChange={handleChangeDate}
+              onFocusChange={(focused) => setFocusedDate(focused)}
+            />
           </div>
 
-          <div className="col-span-2">
+          <Separator className="my-4 md:hidden" />
+          <Separator
+            orientation="vertical"
+            className="hidden md:block h-full w-[1px]"
+          />
+
+          <div>
             <p className="text-base font-semibold">
               Fri, <span className="text-sm text-[#6B7280]">Jun 24</span>
             </p>
