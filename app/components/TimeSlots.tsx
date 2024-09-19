@@ -2,6 +2,8 @@ import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
 import prisma from "../lib/db";
 import Link from "next/link";
+import { getDayOfWeek } from "@internationalized/date";
+import { Prisma } from "@prisma/client";
 
 interface TimeSlotsProps {
   selectedDate: Date;
@@ -16,7 +18,8 @@ async function getAvailability(username: string, date: Date) {
       User: {
         username: username,
       },
-      day: "Wednesday",
+      day: dayName as Prisma.EnumDayFilter,
+      isActive: true,
     },
     select: {
       fromTime: true,

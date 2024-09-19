@@ -255,18 +255,42 @@ export async function updateAvailabilityAction(formData: FormData) {
   }
 }
 
-export async function createMeetingAction() {
-  const now = Math.floor(Date.now() / 1000);
+export async function createMeetingAction(formData: FormData) {
+  const session = await requireUser();
+
+  const getUserData = await prisma.user.findUnique({
+    where: {
+      id: session.user?.id as string,
+    },
+    select: {
+      grantEmail: true,
+      grantId: true,
+    },
+  });
+
+  if (!getUserData) {
+    throw new Error("User not found");
+  }
+
+  const eventTypeData = await prisma.eventType.findUnique({
+    where: {
+      id: "b45d3566-c697-4cf5-856a-c7848785d04a",
+      url: formData.get("eventName") as string,
+    },
+    select: {
+      title: true,
+      description: true,
+    },
+  });
 
   await nylas.events.create({
-    identifier: "4ee829c0-4f3e-44e5-b64a-791df8d210ea",
+    identifier: getUserData?.grantId as string,
     requestBody: {
-      title: "Meeting with Jan",
-      description: "this is just an test meeting",
-
+      title: eventTypeData?.title,
+      description: eventTypeData?.description,
       when: {
-        startTime: now,
-        endTime: now + 3600,
+        startTime: Math.floor(new Date().setHours(14, 0, 0, 0) / 1000),
+        endTime: Math.floor(new Date().setHours(15, 0, 0, 0) / 1000),
       },
       conferencing: {
         autocreate: {},
@@ -274,17 +298,24 @@ export async function createMeetingAction() {
       },
       participants: [
         {
-          name: "Jan Marshal",
-          email: "janniklasmarzahl@gmail.com",
+          name: formData.get("name") as string,
+          email: formData.get("email") as string,
           status: "yes",
+        },
+        {
+          email: session.user?.email as string,
+          status: "yes",
+          name: session.user?.name as string,
         },
       ],
     },
     queryParams: {
-      calendarId: "jan@alenix.de",
+      calendarId: getUserData?.grantEmail as string,
       notifyParticipants: true,
     },
   });
+
+  return redirect(`/success`);
 }
 
 export async function cancelMeetingAction(formData: FormData) {

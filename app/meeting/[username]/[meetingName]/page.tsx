@@ -2,17 +2,17 @@ import prisma from "@/app/lib/db";
 import { nylas } from "@/app/lib/nylas";
 import { notFound } from "next/navigation";
 import React from "react";
-import { startOfDay, addDays } from "date-fns";
+import { addDays } from "date-fns";
 import { Card, CardContent } from "@/components/ui/card";
 import Image from "next/image";
 import { BookMarked, CalendarX2, Clock } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
-import { Button } from "@/components/ui/button";
 import { RenderCalendar } from "@/app/components/demo/RenderCalendar";
 import { TimeSlots } from "@/app/components/TimeSlots";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { SubmitButton } from "@/app/components/SubmitButton";
+import { createMeetingAction } from "@/app/actions";
 
 const targetDate = new Date(2024, 8, 19); // Note: month is 0-indexed, so 8 is September
 const nextDay = addDays(targetDate, 1);
@@ -29,26 +29,6 @@ async function getData(userName: string) {
       Availability: true,
     },
   });
-  /* const data = await prisma.availability.findMany({
-    where: {
-      User: {
-        username: userName,
-      },
-    },
-
-    select: {
-      User: {
-        select: {
-          grantId: true,
-          grantEmail: true,
-        },
-      },
-      day: true,
-      fromTime: true,
-      tillTime: true,
-      isActive: true,
-    },
-  }); */
 
   const nylasCalendarData = await nylas.calendars.getFreeBusy({
     identifier: data?.grantId as string,
@@ -127,15 +107,24 @@ const MeetingPagee = async ({
               className="hidden md:block h-full w-[1px]"
             />
 
-            <form className="flex flex-col gap-y-4">
+            <form
+              className="flex flex-col gap-y-4"
+              action={createMeetingAction}
+            >
+              <input type="hidden" name="startTime" value={searchParams.date} />
+              <input
+                type="hidden"
+                name="eventName"
+                value={params.meetingName}
+              />
               <div className="flex flex-col gap-y-1">
                 <Label>Your Name</Label>
-                <Input placeholder="Your Name" />
+                <Input name="name" placeholder="Your Name" />
               </div>
 
               <div className="flex flex-col gap-y-1">
                 <Label>Your Email</Label>
-                <Input placeholder="johndoe@gmail.com" />
+                <Input name="email" placeholder="johndoe@gmail.com" />
               </div>
 
               <SubmitButton text="Book Meeting" />
