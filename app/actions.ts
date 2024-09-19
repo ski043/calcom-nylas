@@ -290,7 +290,7 @@ export async function createMeetingAction(formData: FormData) {
       description: eventTypeData?.description,
       when: {
         startTime: Math.floor(new Date().setHours(14, 0, 0, 0) / 1000),
-        endTime: Math.floor(new Date().setHours(15, 0, 0, 0) / 1000),
+        endTime: Math.floor(new Date().setHours(14, 30, 0, 0) / 1000),
       },
       conferencing: {
         autocreate: {},

@@ -17,33 +17,42 @@ import { createMeetingAction } from "@/app/actions";
 const targetDate = new Date(2024, 8, 19); // Note: month is 0-indexed, so 8 is September
 const nextDay = addDays(targetDate, 1);
 
-async function getData(userName: string) {
+async function getData(userName: string, meetingName: string) {
   const data = await prisma.user.findUnique({
     where: {
       username: userName,
     },
     select: {
       grantEmail: true,
+      name: true,
       grantId: true,
       image: true,
       Availability: true,
+      EventType: {
+        where: {
+          user: {
+            username: userName,
+          },
+          url: meetingName,
+        },
+      },
     },
   });
 
-  const nylasCalendarData = await nylas.calendars.getFreeBusy({
+  /* const nylasCalendarData = await nylas.calendars.getFreeBusy({
     identifier: data?.grantId as string,
     requestBody: {
       startTime: Math.floor(targetDate.getTime() / 1000),
       endTime: Math.floor(nextDay.getTime() / 1000),
       emails: [data?.grantEmail as string],
     },
-  });
+  }); */
 
-  if (!data || !nylasCalendarData) {
+  if (!data) {
     return notFound();
   }
 
-  return { data, nylasCalendarData };
+  return { data };
 }
 
 const MeetingPagee = async ({
@@ -53,7 +62,7 @@ const MeetingPagee = async ({
   params: { username: string; meetingName: string };
   searchParams: { date?: string; time?: string };
 }) => {
-  const { data, nylasCalendarData } = await getData(params.username);
+  const { data } = await getData(params.username, params.meetingName);
   const selectedDate = searchParams.date
     ? new Date(searchParams.date)
     : new Date();
@@ -74,7 +83,7 @@ const MeetingPagee = async ({
                 height={30}
               />
               <p className="text-sm font-medium text-[#6B7280] mt-1">
-                Alex Fisher
+                {data.name}
               </p>
               <h1 className="text-xl font-semibold mt-2">Design Workshop</h1>
               <p className="text-sm font-medium text-[#374151]">
@@ -143,11 +152,13 @@ const MeetingPagee = async ({
                 height={30}
               />
               <p className="text-sm font-medium text-[#6B7280] mt-1">
-                Alex Fisher
+                {data.name}
               </p>
-              <h1 className="text-xl font-semibold mt-2">Design Workshop</h1>
+              <h1 className="text-xl font-semibold mt-2">
+                {data.EventType[0].title}
+              </h1>
               <p className="text-sm font-medium text-[#374151]">
-                A longer chat to run through design.
+                {data.EventType[0].description}
               </p>
 
               <div className="mt-5 grid gap-y-2">
@@ -160,7 +171,7 @@ const MeetingPagee = async ({
                 <p className="flex items-center">
                   <Clock className="size-4 mr-2 text-[#6B7280]" />
                   <span className="text-sm font-medium text-[#374151]">
-                    30 Mins
+                    {data.EventType[0].duration} Mins
                   </span>
                 </p>
                 <p className="flex items-center">
