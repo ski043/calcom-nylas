@@ -13,14 +13,19 @@ export function CalendarCell({
   state,
   date,
   currentMonth,
+  isUnavailable,
 }: {
   state: CalendarState;
   date: CalendarDate;
   currentMonth: CalendarDate;
+  isUnavailable?: boolean;
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const { cellProps, buttonProps, isSelected, isDisabled, formattedDate } =
     useCalendarCell({ date }, state, ref);
+
+  // Override isDisabled if the date is unavailable
+  const finalIsDisabled = isDisabled || isUnavailable;
 
   const { focusProps, isFocusVisible } = useFocusRing();
 
@@ -42,10 +47,10 @@ export function CalendarCell({
         <div
           className={cn(
             "size-full rounded-sm flex items-center justify-center text-sm font-semibold",
-            isDisabled ? "text-gray-300 cursor-default" : "",
+            finalIsDisabled ? "text-muted-foreground cursor-not-allowed" : "",
             isFocusVisible ? "group-focus:z-2 ring-gray-12 ring-offset-1" : "",
             isSelected ? "bg-primary text-white" : "",
-            !isSelected && !isDisabled ? "hover:bg-blue-500/10 " : ""
+            !isSelected && !finalIsDisabled ? "hover:bg-blue-500/10 " : ""
           )}
         >
           {formattedDate}

@@ -197,7 +197,7 @@ const MeetingPagee = async ({
               className="hidden md:block h-full w-[1px]"
             />
 
-            <TimeSlots selectedDate={selectedDate} username={params.username} />
+            <TimeSlots selectedDate={selectedDate} userName={params.username} />
           </CardContent>
         </Card>
       )}
@@ -206,96 +206,3 @@ const MeetingPagee = async ({
 };
 
 export default MeetingPagee;
-
-/* 
-{
-  "requestId": "1727479444-11256528-1054-41fd-bc3d-966780014445",
-  "data": [
-    {
-      "email": "janniklasmarzahl@gmail.com",
-      "object": "free_busy",
-      "timeSlots": [
-        {
-          "object": "time_slot",
-          "status": "busy",
-          "startTime": 1726749000,
-          "endTime": 1726752600
-        }
-      ]
-    }
-  ]
-} */
-
-/*   [
-    {
-      "User": {
-        "grantId": "2be90040-43d3-4cf7-821a-b1c53a33086b",
-        "grantEmail": "janniklasmarzahl@gmail.com"
-      },
-      "day": "Monday",
-      "fromTime": "08:00",
-      "tillTime": "18:00",
-      "isActive": true
-    },
-    {
-      "User": {
-        "grantId": "2be90040-43d3-4cf7-821a-b1c53a33086b",
-        "grantEmail": "janniklasmarzahl@gmail.com"
-      },
-      "day": "Tuesday",
-      "fromTime": "08:00",
-      "tillTime": "18:00",
-      "isActive": true
-    },
-    {
-      "User": {
-        "grantId": "2be90040-43d3-4cf7-821a-b1c53a33086b",
-        "grantEmail": "janniklasmarzahl@gmail.com"
-      },
-      "day": "Wednesday",
-      "fromTime": "08:00",
-      "tillTime": "18:00",
-      "isActive": true
-    },
-    {
-      "User": {
-        "grantId": "2be90040-43d3-4cf7-821a-b1c53a33086b",
-        "grantEmail": "janniklasmarzahl@gmail.com"
-      },
-      "day": "Thursday",
-      "fromTime": "08:00",
-      "tillTime": "18:00",
-      "isActive": true
-    },
-    {
-      "User": {
-        "grantId": "2be90040-43d3-4cf7-821a-b1c53a33086b",
-        "grantEmail": "janniklasmarzahl@gmail.com"
-      },
-      "day": "Friday",
-      "fromTime": "08:00",
-      "tillTime": "18:00",
-      "isActive": true
-    },
-    {
-      "User": {
-        "grantId": "2be90040-43d3-4cf7-821a-b1c53a33086b",
-        "grantEmail": "janniklasmarzahl@gmail.com"
-      },
-      "day": "Saturday",
-      "fromTime": "08:00",
-      "tillTime": "18:00",
-      "isActive": true
-    },
-    {
-      "User": {
-        "grantId": "2be90040-43d3-4cf7-821a-b1c53a33086b",
-        "grantEmail": "janniklasmarzahl@gmail.com"
-      },
-      "day": "Sunday",
-      "fromTime": "08:00",
-      "tillTime": "18:00",
-      "isActive": true
-    }
-  ]
- */

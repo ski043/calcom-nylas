@@ -26,7 +26,14 @@ async function getData(id: string) {
       id: id,
     },
     select: {
-      EventType: true,
+      EventType: {
+        select: {
+          id: true,
+          active: true,
+          title: true,
+          url: true,
+        },
+      },
       username: true,
     },
   });

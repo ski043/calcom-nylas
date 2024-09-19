@@ -1,8 +1,7 @@
-import { Button } from "@/components/ui/button";
+/* import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
 import prisma from "../lib/db";
 import Link from "next/link";
-import { getDayOfWeek } from "@internationalized/date";
 import { Prisma } from "@prisma/client";
 
 interface TimeSlotsProps {
@@ -93,6 +92,51 @@ export async function TimeSlots({ selectedDate, username }: TimeSlotsProps) {
           <p>No available time slots for this date.</p>
         )}
       </div>
+    </div>
+  );
+}
+ */
+
+import { format } from "date-fns";
+import prisma from "../lib/db";
+import { Prisma } from "@prisma/client";
+
+interface iappProps {
+  selectedDate: Date;
+  userName: string;
+}
+
+async function getAvailability(currentDay: string, userName: string) {
+  const data = await prisma.availability.findFirst({
+    where: {
+      day: currentDay as Prisma.EnumDayFilter,
+      User: {
+        username: userName,
+      },
+    },
+    select: {
+      fromTime: true,
+      tillTime: true,
+      id: true,
+    },
+  });
+
+  return data;
+}
+
+export async function TimeSlots({ selectedDate, userName }: iappProps) {
+  const currentDay = format(selectedDate, "EEEE");
+
+  const data = await getAvailability(currentDay, userName);
+
+  return (
+    <div>
+      <p className="text-base font-semibold">
+        {format(selectedDate, "EEE")}.{" "}
+        <span className="text-sm text-muted-foreground">
+          {format(selectedDate, "MMM. d")}
+        </span>
+      </p>
     </div>
   );
 }

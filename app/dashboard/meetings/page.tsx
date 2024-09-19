@@ -1,5 +1,7 @@
 import { cancelMeetingAction } from "@/app/actions";
 import { EmptyState } from "@/app/components/dashboard/EmptyState";
+import { SubmitButton } from "@/app/components/SubmitButton";
+import { auth } from "@/app/lib/auth";
 import { nylas } from "@/app/lib/nylas";
 import { Button } from "@/components/ui/button";
 import {
@@ -10,14 +12,28 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import prisma from "@/lib/prisma";
 
 import React from "react";
 
-async function getData() {
+async function getData(userId: string) {
+  const userData = await prisma.user.findUnique({
+    where: {
+      id: userId,
+    },
+    select: {
+      grantId: true,
+      grantEmail: true,
+    },
+  });
+
+  if (!userData) {
+    throw new Error("User not found");
+  }
   const data = await nylas.events.list({
-    identifier: "4ee829c0-4f3e-44e5-b64a-791df8d210ea",
+    identifier: userData?.grantId as string,
     queryParams: {
-      calendarId: "jan@alenix.de",
+      calendarId: userData?.grantEmail as string,
     },
   });
 
@@ -25,7 +41,8 @@ async function getData() {
 }
 
 const MeetingsPage = async () => {
-  const data = await getData();
+  const session = await auth();
+  const data = await getData(session?.user?.id as string);
 
   return (
     <>
@@ -54,9 +71,12 @@ const MeetingsPage = async () => {
                     <p>09:00 AM - 10:00 AM</p>
                   </div>
                   <p className="text-center">1 Host</p>
-                  <Button variant="destructive" className="w-fit flex  ml-auto">
-                    Cancel
-                  </Button>
+
+                  <SubmitButton
+                    text="Cancel Meeting"
+                    variant="destructive"
+                    className="w-fit flex ml-auto"
+                  />
                 </div>
                 <Separator className="my-3" />
               </form>

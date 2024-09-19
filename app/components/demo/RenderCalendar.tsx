@@ -9,11 +9,13 @@ import {
   getLocalTimeZone,
   today,
   parseDate,
-  isWeekend,
 } from "@internationalized/date";
-import { useLocale } from "react-aria";
 
-export function RenderCalendar() {
+interface iAppProps {
+  daysofWeek: { day: string; isActive: boolean }[];
+}
+
+export function RenderCalendar({ daysofWeek }: iAppProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -41,6 +43,11 @@ export function RenderCalendar() {
     router.push(url.toString());
   };
 
+  const isDateUnavailable = (date: DateValue) => {
+    const dayOfWeek = date.toDate(timeZone).getDay();
+    return !daysofWeek[dayOfWeek].isActive;
+  };
+
   return (
     <Calendar
       minValue={today(getLocalTimeZone())}
@@ -48,6 +55,7 @@ export function RenderCalendar() {
       value={date}
       onChange={handleChangeDate}
       onFocusChange={(focused) => setFocusedDate(focused)}
+      isDateUnavailable={isDateUnavailable}
     />
   );
 }

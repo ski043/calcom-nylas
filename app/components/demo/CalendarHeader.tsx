@@ -35,7 +35,9 @@ export function CalendarHeader({
 
       <h2 aria-hidden className="flex-1 align-center font-semibold text-base">
         {monthName}{" "}
-        <span className="text-[#6B7280] text-sm font-medium">{year}</span>
+        <span className="text-muted-foreground text-sm font-medium">
+          {year}
+        </span>
       </h2>
       <div className="flex items-center gap-2">
         <CalendarButton {...prevButtonProps}>

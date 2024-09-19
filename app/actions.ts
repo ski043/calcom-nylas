@@ -15,8 +15,8 @@ import { nylas } from "./lib/nylas";
 
 export async function onboardingAction(prevState: any, formData: FormData) {
   const session = await requireUser();
+
   const submission = await parseWithZod(formData, {
-    // create the zod schema with `isEmailUnique()` implemented
     schema: onboardingSchema({
       async isUsernameUnique() {
         const exisitngSubDirectory = await prisma.user.findUnique({
@@ -35,14 +35,13 @@ export async function onboardingAction(prevState: any, formData: FormData) {
     return submission.reply();
   }
 
-  const user = await prisma.user.update({
+  const OnboardingData = await prisma.user.update({
     where: {
-      id: session.user?.id as string,
+      id: session.user?.id,
     },
     data: {
       username: submission.value.username,
       name: submission.value.fullName,
-
       Availability: {
         createMany: {
           data: [
@@ -87,7 +86,7 @@ export async function onboardingAction(prevState: any, formData: FormData) {
     },
   });
 
-  return redirect("/dashboard");
+  return redirect("/onboarding/grant-id");
 }
 
 export async function SettingsAction(prevState: any, formData: FormData) {

@@ -4,7 +4,11 @@ import { useCalendarState } from "react-stately";
 import { CalendarHeader } from "./CalendarHeader";
 import { CalendarGrid } from "./CalendarGrid";
 
-export function Calendar(props: CalendarProps<DateValue>) {
+export function Calendar(
+  props: CalendarProps<DateValue> & {
+    isDateUnavailable?: (date: DateValue) => boolean;
+  }
+) {
   const { locale } = useLocale();
   const state = useCalendarState({
     ...props,
@@ -26,7 +30,10 @@ export function Calendar(props: CalendarProps<DateValue>) {
         nextButtonProps={nextButtonProps}
       />
       <div className="flex gap-8">
-        <CalendarGrid state={state} />
+        <CalendarGrid
+          state={state}
+          isDateUnavailable={props.isDateUnavailable}
+        />
       </div>
     </div>
   );
