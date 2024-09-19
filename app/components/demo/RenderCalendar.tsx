@@ -9,7 +9,9 @@ import {
   getLocalTimeZone,
   today,
   parseDate,
+  isWeekend,
 } from "@internationalized/date";
+import { useLocale } from "react-aria";
 
 export function RenderCalendar() {
   const router = useRouter();

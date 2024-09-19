@@ -263,6 +263,7 @@ export async function createMeetingAction() {
     requestBody: {
       title: "Meeting with Jan",
       description: "this is just an test meeting",
+
       when: {
         startTime: now,
         endTime: now + 3600,
