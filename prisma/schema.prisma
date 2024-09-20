@@ -96,12 +96,13 @@ enum Day {
 }
 
 model EventType {
-  id          String  @id @default(uuid())
-  title       String
-  duration    Int
-  url         String
-  description String
-  active      Boolean @default(true)
+  id                String  @id @default(uuid())
+  title             String
+  duration          Int
+  url               String
+  description       String
+  active            Boolean @default(true)
+  videoCallSoftware String  @default("Google Meet")
 
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String

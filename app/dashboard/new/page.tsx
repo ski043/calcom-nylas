@@ -22,7 +22,7 @@ import Link from "next/link";
 import React, { useState } from "react";
 import { useFormState } from "react-dom";
 
-type Platform = "Zoom Meeting" | "Google Meet" | "Microsoft Teams" | null;
+type Platform = "Zoom Meeting" | "Google Meet" | "Microsoft Teams";
 
 const CreateNewEvent = () => {
   const [lastResult, action] = useFormState(CreateEventTypeAction, undefined);
@@ -39,10 +39,10 @@ const CreateNewEvent = () => {
     shouldValidate: "onBlur",
     shouldRevalidate: "onInput",
   });
-  const [activePlatform, setActivePlatform] = useState<Platform>(null);
+  const [activePlatform, setActivePlatform] = useState<Platform>("Google Meet");
 
   const togglePlatform = (platform: Platform) => {
-    setActivePlatform((prev) => (prev === platform ? null : platform));
+    setActivePlatform(platform);
   };
   return (
     <div className="h-full w-full flex-1 flex flex-col items-center justify-center">
@@ -111,6 +111,11 @@ const CreateNewEvent = () => {
             </div>
 
             <div className="grid gap-y-2">
+              <input
+                type="hidden"
+                name={fields.videoCallSoftware.name}
+                value={activePlatform}
+              />
               <Label>Video Call Provider</Label>
               <ButtonGroup className="w-full">
                 <Button

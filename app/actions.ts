@@ -134,6 +134,7 @@ export async function CreateEventTypeAction(
       url: submission.value.url,
       description: submission.value.description,
       userId: session.user?.id as string,
+      videoCallSoftware: submission.value.videoCallSoftware,
     },
   });
 

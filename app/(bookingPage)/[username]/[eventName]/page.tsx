@@ -27,6 +27,7 @@ async function getData(username: string, eventName: string) {
       description: true,
       title: true,
       duration: true,
+      videoCallSoftware: true,
 
       user: {
         select: {
@@ -103,7 +104,7 @@ const BookingPage = async ({
                 <p className="flex items-center">
                   <BookMarked className="size-4 mr-2 text-primary" />
                   <span className="text-sm font-medium text-muted-foreground">
-                    Google Meet
+                    {eventType.videoCallSoftware}
                   </span>
                 </p>
               </div>
