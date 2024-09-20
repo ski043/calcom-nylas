@@ -255,11 +255,9 @@ export async function updateAvailabilityAction(formData: FormData) {
 }
 
 export async function createMeetingAction(formData: FormData) {
-  const session = await requireUser();
-
   const getUserData = await prisma.user.findUnique({
     where: {
-      id: session.user?.id as string,
+      username: formData.get("username") as string,
     },
     select: {
       grantEmail: true,
@@ -273,8 +271,7 @@ export async function createMeetingAction(formData: FormData) {
 
   const eventTypeData = await prisma.eventType.findUnique({
     where: {
-      id: "b45d3566-c697-4cf5-856a-c7848785d04a",
-      url: formData.get("eventName") as string,
+      id: formData.get("eventTypeId") as string,
     },
     select: {
       title: true,
@@ -282,14 +279,23 @@ export async function createMeetingAction(formData: FormData) {
     },
   });
 
+  const formTime = formData.get("fromTime") as string;
+  const meetingLength = Number(formData.get("meetingLength"));
+  const eventDate = formData.get("eventDate") as string;
+
+  const startDateTime = new Date(`${eventDate}T${formTime}:00`);
+
+  // Calculate the end time by adding the meeting length (in minutes) to the start time
+  const endDateTime = new Date(startDateTime.getTime() + meetingLength * 60000);
+
   await nylas.events.create({
     identifier: getUserData?.grantId as string,
     requestBody: {
       title: eventTypeData?.title,
       description: eventTypeData?.description,
       when: {
-        startTime: Math.floor(new Date().setHours(14, 0, 0, 0) / 1000),
-        endTime: Math.floor(new Date().setHours(14, 30, 0, 0) / 1000),
+        startTime: Math.floor(startDateTime.getTime() / 1000),
+        endTime: Math.floor(endDateTime.getTime() / 1000),
       },
       conferencing: {
         autocreate: {},
@@ -300,11 +306,6 @@ export async function createMeetingAction(formData: FormData) {
           name: formData.get("name") as string,
           email: formData.get("email") as string,
           status: "yes",
-        },
-        {
-          email: session.user?.email as string,
-          status: "yes",
-          name: session.user?.name as string,
         },
       ],
     },
@@ -324,6 +325,10 @@ export async function cancelMeetingAction(formData: FormData) {
     where: {
       id: session.user?.id as string,
     },
+    select: {
+      grantEmail: true,
+      grantId: true,
+    },
   });
 
   if (!userData) {
@@ -334,7 +339,7 @@ export async function cancelMeetingAction(formData: FormData) {
     eventId: formData.get("eventId") as string,
     identifier: userData?.grantId as string,
     queryParams: {
-      calendarId: userData?.email as string,
+      calendarId: userData?.grantEmail as string,
     },
   });
 

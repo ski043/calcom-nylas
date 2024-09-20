@@ -22,7 +22,7 @@ export default function SuccessPage() {
             all the details.
           </p>
 
-          <Separator className="my-5" />
+          {/*     <Separator className="my-5" />
 
           <div className="grid grid-cols-3 w-full  self-start gap-y-4">
             <div className="col-span-1">
@@ -44,7 +44,7 @@ export default function SuccessPage() {
             <div className="col-span-2">
               <p className="text-muted-foreground">Online</p>
             </div>
-          </div>
+          </div> */}
         </CardContent>
         <CardFooter>
           <Button className="w-full" asChild>
