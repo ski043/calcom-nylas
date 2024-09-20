@@ -4,6 +4,7 @@ import { CreateEventTypeAction } from "@/app/actions";
 import { SubmitButton } from "@/app/components/SubmitButton";
 import { eventTypeSchema } from "@/app/lib/zodSchemas";
 import { Button } from "@/components/ui/button";
+import { ButtonGroup } from "@/components/ui/ButtonGroup";
 import {
   Card,
   CardContent,
@@ -18,8 +19,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { useForm } from "@conform-to/react";
 import { parseWithZod } from "@conform-to/zod";
 import Link from "next/link";
-import React from "react";
+import React, { useState } from "react";
 import { useFormState } from "react-dom";
+
+type Platform = "Zoom Meeting" | "Google Meet" | "Microsoft Teams" | null;
 
 const CreateNewEvent = () => {
   const [lastResult, action] = useFormState(CreateEventTypeAction, undefined);
@@ -36,6 +39,11 @@ const CreateNewEvent = () => {
     shouldValidate: "onBlur",
     shouldRevalidate: "onInput",
   });
+  const [activePlatform, setActivePlatform] = useState<Platform>(null);
+
+  const togglePlatform = (platform: Platform) => {
+    setActivePlatform((prev) => (prev === platform ? null : platform));
+  };
   return (
     <div className="h-full w-full flex-1 flex flex-col items-center justify-center">
       <Card>
@@ -100,6 +108,44 @@ const CreateNewEvent = () => {
                 type="number"
               />
               <p className="text-red-500 text-sm">{fields.duration.errors}</p>
+            </div>
+
+            <div className="grid gap-y-2">
+              <Label>Video Call Provider</Label>
+              <ButtonGroup className="w-full">
+                <Button
+                  onClick={() => togglePlatform("Zoom Meeting")}
+                  type="button"
+                  className="w-full"
+                  variant={
+                    activePlatform === "Zoom Meeting" ? "secondary" : "outline"
+                  }
+                >
+                  Zoom
+                </Button>
+                <Button
+                  onClick={() => togglePlatform("Google Meet")}
+                  type="button"
+                  className="w-full"
+                  variant={
+                    activePlatform === "Google Meet" ? "secondary" : "outline"
+                  }
+                >
+                  Google Meet
+                </Button>
+                <Button
+                  variant={
+                    activePlatform === "Microsoft Teams"
+                      ? "secondary"
+                      : "outline"
+                  }
+                  type="button"
+                  className="w-full"
+                  onClick={() => togglePlatform("Microsoft Teams")}
+                >
+                  Microsoft Teams
+                </Button>
+              </ButtonGroup>
             </div>
           </CardContent>
           <CardFooter className="w-full flex justify-between">

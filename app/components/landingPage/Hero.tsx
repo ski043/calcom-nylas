@@ -18,8 +18,8 @@ export function Hero() {
           </h1>
 
           <p className="max-w-xl mx-auto mt-4   lg:text-lg text-muted-foreground ">
-            Setting up your blog is hard and time consuming. We make it easy for
-            you to create a blog in minutes
+            Schedualing meeting can be a pain. But we at CalMarshal make it easy
+            for you to schedule meetings with your clients.
           </p>
           <div className=" mt-5 mb-12">
             <AuthModal />

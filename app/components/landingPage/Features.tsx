@@ -14,7 +14,7 @@ const features = [
     icon: CloudRain,
   },
   {
-    name: "Super secure with Kinde",
+    name: "Super secure with Nylas",
     description:
       "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna.",
     icon: CloudRain,
@@ -31,13 +31,14 @@ export function Features() {
   return (
     <div className="py-24 ">
       <div className="max-w-2xl mx-auto lg:text-center">
-        <p className="font-semibold leading-7 text-primary">Blog Faster</p>
+        <p className="font-semibold leading-7 text-primary">Schedule faster</p>
         <h1 className="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">
-          Get your blog up and running in minutes
+          Schedule meetings in minutes
         </h1>
         <p className="mt-6 text-base leading-snug text-muted-foreground">
-          Right here you can create a blog in minutes. We make it easy for you
-          to create a blog in minutes. The blog is very fast and easy to create.
+          With CalMarshal you can schedule meetings in minutes. We make it easy
+          for you to schedule meetings in minutes. The meetings are very fast
+          and easy to schedule.
         </p>
       </div>
 

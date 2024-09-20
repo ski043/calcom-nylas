@@ -32,6 +32,7 @@ async function getData(id: string) {
           active: true,
           title: true,
           url: true,
+          duration: true,
         },
       },
       username: true,
@@ -88,13 +89,13 @@ const DashbaordPage = async () => {
                     <DropdownMenuSeparator />
                     <DropdownMenuGroup>
                       <DropdownMenuItem asChild>
-                        <Link href={`/meeting/${data.username}/${item.url}`}>
+                        <Link href={`/${data.username}/${item.url}`}>
                           <ExternalLink className="mr-2 h-4 w-4" />
                           <span>Preview</span>
                         </Link>
                       </DropdownMenuItem>
                       <CopyLinkMenuItem
-                        meetingUrl={`${process.env.w}/meeting/${data.username}/${item.url}`}
+                        meetingUrl={`${process.env.NEXT_PUBLIC_URL}/${data.username}/${item.url}`}
                       />
                       <DropdownMenuItem asChild>
                         <Link href={`/dashboard/event/${item.id}`}>

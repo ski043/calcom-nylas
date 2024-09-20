@@ -78,7 +78,7 @@ model Availability {
   tillTime String // e.g., '18:00'
   isActive Boolean @default(true) // Toggle availability for the day
 
-  User   User   @relation(fields: [userId], references: [id])
+  User   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String
 
   createdAt DateTime @default(now())
@@ -103,7 +103,7 @@ model EventType {
   description String
   active      Boolean @default(true)
 
-  user   User   @relation(fields: [userId], references: [id])
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String
 
   createdAt DateTime @default(now())
