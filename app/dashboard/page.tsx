@@ -53,7 +53,7 @@ const DashbaordPage = async () => {
   return (
     <>
       <div className="flex items-center justify-between px-2">
-        <div className="grid gap-1">
+        <div className="sm:grid gap-1 hidden">
           <h1 className="font-heading text-3xl md:text-4xl">Event Types</h1>
           <p className="text-lg text-muted-foreground">
             Create and manage your event types.
