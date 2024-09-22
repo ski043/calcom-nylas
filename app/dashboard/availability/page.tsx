@@ -28,9 +28,6 @@ async function getData(userId: string) {
     where: {
       userId: userId,
     },
-    orderBy: {
-      id: "asc",
-    },
   });
 
   if (!data) {

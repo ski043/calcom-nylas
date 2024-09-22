@@ -9,6 +9,9 @@ export function onboardingSchema(options?: {
       .string()
       .min(3)
       .max(150)
+      .regex(/^[a-zA-Z0-9-]+$/, {
+        message: "Username must contain only letters, numbers, and hyphens",
+      })
       // Pipe the schema so it runs only if the email is valid
       .pipe(
         // Note: The callback cannot be async here
@@ -42,7 +45,13 @@ export function onboardingSchema(options?: {
 }
 
 export const onboardingSchemaLocale = z.object({
-  username: z.string().min(3).max(150),
+  username: z
+    .string()
+    .min(3)
+    .max(150)
+    .regex(/^[a-zA-Z0-9-]+$/, {
+      message: "Username must contain only letters, numbers, and hyphens",
+    }),
   fullName: z.string().min(3).max(150),
 });
 
