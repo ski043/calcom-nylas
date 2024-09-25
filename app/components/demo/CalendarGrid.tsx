@@ -32,7 +32,7 @@ export function CalendarGrid({
   const weeksInMonth = getWeeksInMonth(startDate, locale);
   return (
     <table {...gridProps} cellPadding="0" className="flex-1">
-      <thead {...headerProps} className="text-[#374151] text-sm font-medium">
+      <thead {...headerProps} className=" text-sm font-medium">
         <tr>
           {weekDays.map((day, index) => (
             <th key={index}>{day}</th>
