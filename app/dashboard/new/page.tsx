@@ -15,6 +15,15 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { useForm } from "@conform-to/react";
 import { parseWithZod } from "@conform-to/zod";
@@ -100,13 +109,25 @@ const CreateNewEvent = () => {
 
             <div className="grid gap-y-2">
               <Label>Duration</Label>
-              <Input
+              <Select
                 name={fields.duration.name}
                 key={fields.duration.key}
                 defaultValue={fields.duration.initialValue}
-                placeholder="30 min"
-                type="number"
-              />
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select the duration" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectLabel>Duration</SelectLabel>
+                    <SelectItem value="15">15 Mins</SelectItem>
+                    <SelectItem value="30">30 Min</SelectItem>
+                    <SelectItem value="45">45 Mins</SelectItem>
+                    <SelectItem value="60">1 Hour</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+
               <p className="text-red-500 text-sm">{fields.duration.errors}</p>
             </div>
 

@@ -19,6 +19,17 @@ import { useForm } from "@conform-to/react";
 import { parseWithZod } from "@conform-to/zod";
 import { eventTypeSchema } from "@/app/lib/zodSchemas";
 import { EditEventTypeAction } from "@/app/actions";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { ButtonGroup } from "@/components/ui/ButtonGroup";
+import { useState } from "react";
 
 interface iAppProps {
   id: string;
@@ -26,13 +37,17 @@ interface iAppProps {
   url: string;
   description: string;
   duration: number;
+  callProvider: string;
 }
+
+type Platform = "Zoom Meeting" | "Google Meet" | "Microsoft Teams";
 
 export function EditEventTypeForm({
   description,
   duration,
   title,
   url,
+  callProvider,
   id,
 }: iAppProps) {
   const [lastResult, action] = useFormState(EditEventTypeAction, undefined);
@@ -49,6 +64,13 @@ export function EditEventTypeForm({
     shouldValidate: "onBlur",
     shouldRevalidate: "onInput",
   });
+  const [activePlatform, setActivePlatform] = useState<Platform>(
+    callProvider as Platform
+  );
+
+  const togglePlatform = (platform: Platform) => {
+    setActivePlatform(platform);
+  };
   return (
     <div className="h-full w-full flex-1 flex flex-col items-center justify-center">
       <Card>
@@ -106,21 +128,76 @@ export function EditEventTypeForm({
 
             <div className="grid gap-y-2">
               <Label>Duration</Label>
-              <Input
+              <Select
                 name={fields.duration.name}
                 key={fields.duration.key}
-                defaultValue={duration}
-                placeholder="30 min"
-                type="number"
-              />
+                defaultValue={String(duration)}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select the duration" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectLabel>Duration</SelectLabel>
+                    <SelectItem value="15">15 Mins</SelectItem>
+                    <SelectItem value="30">30 Min</SelectItem>
+                    <SelectItem value="45">45 Mins</SelectItem>
+                    <SelectItem value="60">1 Hour</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+
               <p className="text-red-500 text-sm">{fields.duration.errors}</p>
+            </div>
+
+            <div className="grid gap-y-2">
+              <input
+                type="hidden"
+                name={fields.videoCallSoftware.name}
+                value={activePlatform}
+              />
+              <Label>Video Call Provider</Label>
+              <ButtonGroup className="w-full">
+                <Button
+                  onClick={() => togglePlatform("Zoom Meeting")}
+                  type="button"
+                  className="w-full"
+                  variant={
+                    activePlatform === "Zoom Meeting" ? "secondary" : "outline"
+                  }
+                >
+                  Zoom
+                </Button>
+                <Button
+                  onClick={() => togglePlatform("Google Meet")}
+                  type="button"
+                  className="w-full"
+                  variant={
+                    activePlatform === "Google Meet" ? "secondary" : "outline"
+                  }
+                >
+                  Google Meet
+                </Button>
+                <Button
+                  variant={
+                    activePlatform === "Microsoft Teams"
+                      ? "secondary"
+                      : "outline"
+                  }
+                  type="button"
+                  className="w-full"
+                  onClick={() => togglePlatform("Microsoft Teams")}
+                >
+                  Microsoft Teams
+                </Button>
+              </ButtonGroup>
             </div>
           </CardContent>
           <CardFooter className="w-full flex justify-between">
             <Button asChild variant="secondary">
               <Link href="/dashboard">Cancel</Link>
             </Button>
-            <SubmitButton text="Create Event Type" />
+            <SubmitButton text="Edit Event Type" />
           </CardFooter>
         </form>
       </Card>

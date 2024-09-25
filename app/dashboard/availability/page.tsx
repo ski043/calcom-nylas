@@ -52,7 +52,10 @@ const AvailabilityPage = async () => {
       <form action={updateAvailabilityAction}>
         <CardContent className="flex flex-col gap-y-4">
           {data.map((item) => (
-            <div className="grid grid-cols-6 items-center gap-4" key={item.id}>
+            <div
+              className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 items-center gap-4"
+              key={item.id}
+            >
               <input type="hidden" name={`id-${item.id}`} value={item.id} />
               <div className="flex items-center gap-x-3">
                 <Switch
@@ -62,7 +65,7 @@ const AvailabilityPage = async () => {
                 <p>{item.day}</p>
               </div>
               <Select name={`fromTime-${item.id}`} defaultValue={item.fromTime}>
-                <SelectTrigger className="w-[180px]">
+                <SelectTrigger className="w-full">
                   <SelectValue placeholder="From Time" />
                 </SelectTrigger>
                 <SelectContent>
@@ -76,7 +79,7 @@ const AvailabilityPage = async () => {
                 </SelectContent>
               </Select>
               <Select name={`tillTime-${item.id}`} defaultValue={item.tillTime}>
-                <SelectTrigger className="w-[180px]">
+                <SelectTrigger className="w-full">
                   <SelectValue placeholder="To Time" />
                 </SelectTrigger>
                 <SelectContent>

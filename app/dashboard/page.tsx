@@ -25,6 +25,7 @@ async function getData(id: string) {
     where: {
       id: id,
     },
+
     select: {
       EventType: {
         select: {
@@ -33,6 +34,9 @@ async function getData(id: string) {
           title: true,
           url: true,
           duration: true,
+        },
+        orderBy: {
+          createdAt: "desc",
         },
       },
       username: true,

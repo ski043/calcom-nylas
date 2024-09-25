@@ -68,3 +68,45 @@ export const eventTypeSchema = z.object({
   description: z.string().min(3).max(300),
   videoCallSoftware: z.string(),
 });
+
+export function EventTypeServerSchema(options?: {
+  isUrlUnique: () => Promise<boolean>;
+}) {
+  return z.object({
+    url: z
+      .string()
+      .min(3)
+      .max(150)
+      .pipe(
+        // Note: The callback cannot be async here
+        // As we run zod validation synchronously on the client
+        z.string().superRefine((_, ctx) => {
+          // This makes Conform to fallback to server validation
+          // by indicating that the validation is not defined
+          if (typeof options?.isUrlUnique !== "function") {
+            ctx.addIssue({
+              code: "custom",
+              message: conformZodMessage.VALIDATION_UNDEFINED,
+              fatal: true,
+            });
+            return;
+          }
+
+          // If it reaches here, then it must be validating on the server
+          // Return the result as a promise so Zod knows it's async instead
+          return options.isUrlUnique().then((isUnique) => {
+            if (!isUnique) {
+              ctx.addIssue({
+                code: "custom",
+                message: "Url is already used",
+              });
+            }
+          });
+        })
+      ),
+    title: z.string().min(3).max(150),
+    duration: z.number().min(1).max(100),
+    description: z.string().min(3).max(300),
+    videoCallSoftware: z.string(),
+  });
+}

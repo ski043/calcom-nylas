@@ -6,6 +6,7 @@ import { requireUser } from "./lib/hooks";
 import {
   aboutSettingsSchema,
   eventTypeSchema,
+  EventTypeServerSchema,
   onboardingSchema,
 } from "./lib/zodSchemas";
 import { redirect } from "next/navigation";
@@ -119,10 +120,21 @@ export async function CreateEventTypeAction(
 ) {
   const session = await requireUser();
 
-  const submission = parseWithZod(formData, {
-    schema: eventTypeSchema,
-  });
+  const submission = await parseWithZod(formData, {
+    schema: EventTypeServerSchema({
+      async isUrlUnique() {
+        const data = await prisma.eventType.findFirst({
+          where: {
+            userId: session.user?.id,
+            url: formData.get("url") as string,
+          },
+        });
+        return !data;
+      },
+    }),
 
+    async: true,
+  });
   if (submission.status !== "success") {
     return submission.reply();
   }
@@ -144,8 +156,20 @@ export async function CreateEventTypeAction(
 export async function EditEventTypeAction(prevState: any, formData: FormData) {
   const session = await requireUser();
 
-  const submission = parseWithZod(formData, {
-    schema: eventTypeSchema,
+  const submission = await parseWithZod(formData, {
+    schema: EventTypeServerSchema({
+      async isUrlUnique() {
+        const data = await prisma.eventType.findFirst({
+          where: {
+            userId: session.user?.id,
+            url: formData.get("url") as string,
+          },
+        });
+        return !data;
+      },
+    }),
+
+    async: true,
   });
 
   if (submission.status !== "success") {
@@ -162,6 +186,7 @@ export async function EditEventTypeAction(prevState: any, formData: FormData) {
       duration: submission.value.duration,
       url: submission.value.url,
       description: submission.value.description,
+      videoCallSoftware: submission.value.videoCallSoftware,
     },
   });
 
