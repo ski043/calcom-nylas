@@ -11,10 +11,12 @@ import { Prisma } from "@prisma/client";
 import { nylas } from "../lib/nylas";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { NylasResponse, GetFreeBusyResponse } from "nylas";
 
 interface iappProps {
   selectedDate: Date;
   userName: string;
+  meetingDuration: number;
 }
 
 async function getAvailability(selectedDate: Date, userName: string) {
@@ -56,7 +58,17 @@ async function getAvailability(selectedDate: Date, userName: string) {
   return { data, nylasCalendarData };
 }
 
-function calculateAvailableTimeSlots(dbAvailability, nylasData, date) {
+function calculateAvailableTimeSlots(
+  dbAvailability: {
+    fromTime: string | undefined;
+    tillTime: string | undefined;
+  },
+  nylasData: NylasResponse<GetFreeBusyResponse[]>,
+  date: string,
+  duration: number
+) {
+  const now = new Date(); // Get the current time
+
   // Convert DB availability to Date objects
   const availableFrom = parse(
     `${date} ${dbAvailability.fromTime}`,
@@ -70,7 +82,7 @@ function calculateAvailableTimeSlots(dbAvailability, nylasData, date) {
   );
 
   // Extract busy slots from Nylas data
-  const busySlots = nylasData.data[0].timeSlots.map((slot) => ({
+  const busySlots = nylasData.data[0].timeSlots.map((slot: any) => ({
     start: fromUnixTime(slot.startTime),
     end: fromUnixTime(slot.endTime),
   }));
@@ -80,17 +92,20 @@ function calculateAvailableTimeSlots(dbAvailability, nylasData, date) {
   let currentSlot = availableFrom;
   while (isBefore(currentSlot, availableTill)) {
     allSlots.push(currentSlot);
-    currentSlot = addMinutes(currentSlot, 30);
+    currentSlot = addMinutes(currentSlot, duration);
   }
 
-  // Filter out busy slots
+  // Filter out busy slots and slots before the current time
   const freeSlots = allSlots.filter((slot) => {
-    const slotEnd = addMinutes(slot, 30);
-    return !busySlots.some(
-      (busy) =>
-        (!isBefore(slot, busy.start) && isBefore(slot, busy.end)) ||
-        (isAfter(slotEnd, busy.start) && !isAfter(slotEnd, busy.end)) ||
-        (isBefore(slot, busy.start) && isAfter(slotEnd, busy.end))
+    const slotEnd = addMinutes(slot, duration);
+    return (
+      isAfter(slot, now) && // Ensure the slot is after the current time
+      !busySlots.some(
+        (busy: { start: any; end: any }) =>
+          (!isBefore(slot, busy.start) && isBefore(slot, busy.end)) ||
+          (isAfter(slotEnd, busy.start) && !isAfter(slotEnd, busy.end)) ||
+          (isBefore(slot, busy.start) && isAfter(slotEnd, busy.end))
+      )
     );
   });
 
@@ -98,7 +113,11 @@ function calculateAvailableTimeSlots(dbAvailability, nylasData, date) {
   return freeSlots.map((slot) => format(slot, "HH:mm"));
 }
 
-export async function TimeSlots({ selectedDate, userName }: iappProps) {
+export async function TimeSlots({
+  selectedDate,
+  userName,
+  meetingDuration,
+}: iappProps) {
   const { data, nylasCalendarData } = await getAvailability(
     selectedDate,
     userName
@@ -111,7 +130,8 @@ export async function TimeSlots({ selectedDate, userName }: iappProps) {
   const availableSlots = calculateAvailableTimeSlots(
     dbAvailability,
     nylasCalendarData,
-    formattedDate
+    formattedDate,
+    meetingDuration
   );
 
   return (

@@ -63,7 +63,11 @@ const BookingPage = async ({
     : new Date();
   const eventType = await getData(params.username, params.eventName);
 
-  const formattedDate = format(selectedDate, "EEEE, do MMMM");
+  const formattedDate = new Intl.DateTimeFormat("en-US", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+  }).format(selectedDate);
 
   const showForm = !!searchParams.date && !!searchParams.time;
 
@@ -195,7 +199,11 @@ const BookingPage = async ({
               className="hidden md:block h-full w-[1px]"
             />
 
-            <TimeSlots selectedDate={selectedDate} userName={params.username} />
+            <TimeSlots
+              selectedDate={selectedDate}
+              userName={params.username}
+              meetingDuration={eventType.duration}
+            />
           </CardContent>
         </Card>
       )}

@@ -50,7 +50,9 @@ export function CalendarCell({
             finalIsDisabled ? "text-muted-foreground cursor-not-allowed" : "",
             isFocusVisible ? "group-focus:z-2 ring-gray-12 ring-offset-1" : "",
             isSelected ? "bg-primary text-white" : "",
-            !isSelected && !finalIsDisabled ? "hover:bg-blue-500/10 " : ""
+            !isSelected && !finalIsDisabled
+              ? "hover:bg-blue-500/10 bg-secondary"
+              : ""
           )}
         >
           {formattedDate}

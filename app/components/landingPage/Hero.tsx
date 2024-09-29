@@ -1,6 +1,6 @@
 import Image from "next/image";
 
-import HeroImage from "@/public/hero.png";
+import HeroImage from "@/public/better.png";
 import { AuthModal } from "./AuthModal";
 
 export function Hero() {
@@ -18,8 +18,8 @@ export function Hero() {
           </h1>
 
           <p className="max-w-xl mx-auto mt-4   lg:text-lg text-muted-foreground ">
-            Schedualing meeting can be a pain. But we at CalMarshal make it easy
-            for you to schedule meetings with your clients.
+            Scheduling a meeting can be a pain. But we at CalMarshal make it
+            easy for your clients to schedule meetings with you.
           </p>
           <div className=" mt-5 mb-12">
             <AuthModal />
